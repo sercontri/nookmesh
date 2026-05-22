@@ -1,0 +1,21 @@
+node[render=icon] {
+    icon-image: eval(tag('icon_svg'));
+    icon-scale: 0.55;
+    image-allow-overlap: true;
+
+    details-text: eval(tag('name'));
+    details-description: eval(tag('desc'));
+}
+
+node[render=label] {
+    text: eval(tag('tid'));
+    text-color: black;
+    font-weight: bold;
+    font-size: 10;
+    font-stroke-width: 2;
+    font-stroke-color: white;
+    text-allow-overlap: true;
+
+    details-text: eval(tag('name'));
+    details-description: eval(tag('desc'));
+}

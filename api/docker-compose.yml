@@ -1,0 +1,19 @@
+# ------------------------------------------------------------
+# NookMesh API
+# FastAPI HTTP layer
+# ------------------------------------------------------------
+
+services:
+  api:
+    build: .
+    image: nookmesh-api:latest
+    container_name: nookmesh-api
+    restart: unless-stopped
+
+    ports:
+      - "8089:8089"
+
+    volumes:
+      - ../data/public:/data/public:ro
+      - ../data/runtime:/data/runtime:ro
+      - ../config:/config:ro

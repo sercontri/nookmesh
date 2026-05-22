@@ -1,0 +1,21 @@
+# ------------------------------------------------------------
+# NookMesh OwnTracks Recorder
+# Receives MQTT location messages and stores tracking data
+# ------------------------------------------------------------
+
+services:
+  recorder:
+    image: owntracks/recorder:latest
+    container_name: nookmesh-recorder
+    restart: unless-stopped
+
+    env_file:
+      - ../config/recorder.env
+
+    environment:
+      - OTR_PORT=8883
+      - OTR_TLS=true
+      - OTR_CAFILE=/etc/ssl/certs/ca-certificates.crt
+
+    volumes:
+      - ../data/owntracks/store:/store:rw

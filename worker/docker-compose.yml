@@ -1,0 +1,17 @@
+# ------------------------------------------------------------
+# NookMesh Worker
+# Generates nookmesh.geojson from OwnTracks recorder data
+# ------------------------------------------------------------
+
+services:
+  worker:
+    build: .
+    image: nookmesh-worker:latest
+    container_name: nookmesh-worker
+    restart: unless-stopped
+
+    volumes:
+      - ../data/owntracks/store:/data/owntracks/store:ro
+      - ../data/public:/data/public
+      - ../data/runtime:/data/runtime
+      - ../config:/config:ro

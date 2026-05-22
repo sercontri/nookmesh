@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "description": "NookMesh user configuration",
+    "managed_by": "nookmesh-auth"
+  },
+  "users": {
+    "recorder": {
+      "enabled": true,
+      "mqtt_admin": true,
+      "mqtt_password": "PASSWORD_RECORDER",
+      "system_user": true
+    },
+    "sergio": {
+      "enabled": true,
+      "mqtt_admin": true,
+      "mqtt_password": "PASSWORD_SERGIO",
+      "regen_token": false,
+      "grupos": ["amigos", "familia", "viaje1", "viaje2", "trabajo"]
+      "oculto_para": []
+      "rol": "staff"
+    },
+    "sandra": {
+      "enabled": true,
+      "mqtt_password": "PASSWORD_SANDRA",
+      "regen_token": false,
+      "grupos": ["amigos", "familia", "viaje1", "viaje2"],
+      "oculto_para": ["viaje1", "viaje2"]
+      "rol": "staff"
+    },
+    "raul": {
+      "enabled": true,
+      "mqtt_password": "PASSWORD_RAUL",
+      "regen_token": false,
+      "grupos": ["amigos", "viaje1"],
+      "oculto_para": []
+    }
+  }
+}

@@ -1,0 +1,50 @@
+# ------------------------------------------------------------
+# NookMesh
+# Runtime / secrets / local development
+# ------------------------------------------------------------
+
+# Real config files
+config/users.json
+config/filtros.env
+config/recorder.env
+
+# Generated auth
+config/generated/*
+!config/generated/.gitkeep
+
+# Certificates
+config/cert/*
+!config/cert/mqtt/
+config/cert/mqtt/*
+!config/cert/mqtt/.gitkeep
+
+# Runtime data
+data/runtime/*
+!data/runtime/.gitkeep
+
+# OwnTracks recorder data
+data/owntracks/store/*
+!data/owntracks/store/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Synology
+@eaDir/
+*.SynoEAStream
+*.SynoResource
+
+# IDE
+.vscode/
+.idea/
+
+# Generic env
+.env
+
+# Logs
+*.log

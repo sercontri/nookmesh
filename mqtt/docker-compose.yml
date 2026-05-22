@@ -1,0 +1,27 @@
+# ------------------------------------------------------------
+# NookMesh MQTT Broker
+# Secure MQTT broker for OwnTracks clients
+# TLS encryption + authentication + ACL authorization
+# ------------------------------------------------------------
+
+services:
+  mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: nookmesh-mqtt
+    restart: unless-stopped
+
+    ports:
+      - "8883:8883"
+
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ../config/generated:/mosquitto/config/generated
+      - ../config/cert/mqtt:/mosquitto/config/cert:ro
+
+    command: >
+      sh -c "
+        mkdir -p /mosquitto/config/generated &&
+        touch /mosquitto/config/generated/mqtt-passwords.txt &&
+        touch /mosquitto/config/generated/mqtt-acl.txt &&
+        exec mosquitto -c /mosquitto/config/mosquitto.conf
+      "

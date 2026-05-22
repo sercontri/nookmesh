@@ -1,0 +1,71 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.7038, 40.4168]
+      },
+      "properties": {
+        "name": "SERGIO",
+        "desc": "Posición 14:32 (menos de 1 min)\nPrecisión 5 m - Rumbo desconocido\nAltitud 667 m - Velocidad 0 km/h\nDispositivo iphone - Batería 78%\nConexión Wi-Fi\nGrupos: amigos, familia\n",
+        "tid": "SE",
+        "tst": 1700000000,
+        "edad_min": 0,
+        "rumbo": null,
+        "grupos": [
+          "amigos",
+          "familia"
+        ],
+        "rol": "staff",
+        "acc": 5,
+        "stroke": "green"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.3763, 39.4699]
+      },
+      "properties": {
+        "name": "SANDRA",
+        "desc": "Posición 14:05 (hace 27 min)\nPrecisión 12 m - Rumbo 145° SE\nAltitud 15 m - Velocidad 18 km/h\nDispositivo android - Batería 61%\nConexión Móvil\nGrupos: amigos, staff\n",
+        "tid": "SA",
+        "tst": 1699998400,
+        "edad_min": 27,
+        "rumbo": 145,
+        "grupos": [
+          "amigos",
+          "staff"
+        ],
+        "rol": "staff",
+        "acc": 12,
+        "stroke": "orange"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.9845, 37.3891]
+      },
+      "properties": {
+        "name": "RAUL",
+        "desc": "Posición 13:41 (hace 51 min)\nPrecisión 20 m - Rumbo desconocido\nAltitud 11 m - Velocidad 0 km/h\nDispositivo android - Batería 43%\nConexión Wi-Fi\nGrupos: amigos, viaje\n",
+        "tid": "RA",
+        "tst": 1699997000,
+        "edad_min": 51,
+        "rumbo": null,
+        "grupos": [
+          "amigos",
+          "viaje"
+        ],
+        "rol": "usuario",
+        "acc": 20,
+        "stroke": "red"
+      }
+    }
+  ]
+}
