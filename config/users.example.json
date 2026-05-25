@@ -15,8 +15,8 @@
       "mqtt_admin": true,
       "mqtt_password": "PASSWORD_SERGIO",
       "regen_token": false,
-      "grupos": ["amigos", "familia", "viaje1", "viaje2", "trabajo"]
-      "oculto_para": []
+      "grupos": ["amigos", "familia", "viaje1", "viaje2", "trabajo"],
+      "oculto_para": [],
       "rol": "staff"
     },
     "sandra": {
@@ -24,7 +24,7 @@
       "mqtt_password": "PASSWORD_SANDRA",
       "regen_token": false,
       "grupos": ["amigos", "familia", "viaje1", "viaje2"],
-      "oculto_para": ["viaje1", "viaje2"]
+      "oculto_para": ["viaje1", "viaje2"],
       "rol": "staff"
     },
     "raul": {

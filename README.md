@@ -1,143 +1,120 @@
 # NookMesh
 
-[Español](docs/README.es.md)
+🇪🇸 [Versión en español](README.es.md)
 
-**Private, secure and self-hosted real-time location sharing for friends, families and teams.**
+![License](https://img.shields.io/github/license/sercontri/nookmesh)
+![Last Commit](https://img.shields.io/github/last-commit/sercontri/nookmesh)
+![Stars](https://img.shields.io/github/stars/sercontri/nookmesh)
+[![Ko-fi](https://img.shields.io/badge/Support-Ko--fi-ff5f5f?logo=ko-fi&logoColor=white)](https://ko-fi.com/nooktrail)
 
-NookMesh is a self-hosted real-time location sharing platform built around **OwnTracks**, **MQTT**, **Docker**, and a protected **GeoJSON API**.
+**Self-hosted real-time location sharing with full privacy and complete control over your data.**
 
-It allows you to collect live device locations, apply advanced visibility rules, and display positions in map clients such as **Guru Maps**, while maintaining full control over your infrastructure and data.
+NookMesh is an open source real-time location sharing platform built around **OwnTracks**, **MQTT**, **Docker**, and a protected **GeoJSON API**, designed for people who want full control over their infrastructure, authentication, and location data.
 
-Unlike commercial tracking platforms, NookMesh is designed with a privacy-first architecture:
+It originally started as a motorcycle group travel project, but its modular architecture makes it adaptable to families, outdoor groups, technical teams, and future hybrid location architectures with multiple location sources.
 
-- Your server
-- Your MQTT broker
-- Your API
-- Your access rules
-- Your tokens
-- Your data
-- Your groups
+> ⚠️ Active project under ongoing development. The core architecture is functional and usable, though some capabilities are still being refined.
 
-NookMesh supports multi-user deployments, group-based visibility, secure token authentication, and multi-device tracking.
+---
+
+## NookMesh in action
+
+![NookMesh running in Guru Maps](docs/assets/images/nookmesh-gurumaps-main.png)
 
 ---
 
 ## Features
 
-- Real-time location tracking using OwnTracks
-- Self-hosted MQTT infrastructure
-- Full Docker-based deployment
-- Token-protected API access
-- Group-based visibility filtering
-- Selective hidden visibility rules
-- MQTT administrative access controls
-- Multi-device support per user
-- Automatic token generation and selective regeneration
-- Protected MapCSS asset delivery
-- Guru Maps integration
-- Dynamic per-user GeoJSON filtering
-- TLS-ready architecture
-- Privacy-first design
-- No dependency on third-party cloud services
+- Real-time location tracking using **OwnTracks + MQTT**
+- **100% self-hosted** infrastructure
+- Protected GeoJSON API with per-user authentication
+- Direct visualization in **Guru Maps**
+- Multi-user and multi-device support
+- Advanced per-user visibility control
+- Modular Docker-based architecture
+- Secure deployment with TLS (recommended)
+- Foundation for future hybrid integrations
 
 ---
 
-## Architecture Overview
+## Current stack
 
-NookMesh follows a modular self-hosted architecture:
+NookMesh currently uses:
 
-```text
-OwnTracks (iOS / Android)
-            │
-            │ MQTT over TLS
-            ▼
-      Mosquitto Broker
-            │
-            ▼
-    OwnTracks Recorder
-            │
-            ▼
-   GeoJSON Export Worker
-            │
-            ▼
-      Filtered FastAPI API
-            │
-            ├── Protected GeoJSON endpoint
-            └── Protected MapCSS endpoint
-                    │
-                    ▼
-                 Guru Maps
-```
+- OwnTracks
+- Mosquitto
+- OwnTracks Recorder
+- FastAPI
+- Docker
+- GeoJSON
+- Guru Maps
 
 ---
 
-## Use Cases
+## How it works
 
-NookMesh is ideal for:
+NookMesh receives location updates from mobile devices via **OwnTracks**, processes them inside your own infrastructure, and exposes only authorized data to compatible clients.
 
-- Families who want private location sharing
-- Groups of friends during trips or events
-- Hiking and outdoor teams
-- Volunteer coordination
-- Mesh network communities
-- Privacy-conscious self-hosters
-- Technical users who want full infrastructure control
+All authentication, visibility filtering, and access control happen entirely in your own backend.
+
+![NookMesh architecture](docs/assets/images/architecture-overview.en.png)
+
+📘 Full architecture documentation is available in the technical docs.
 
 ---
 
-## Why NookMesh?
+## Use cases
 
-Most commercial location-sharing platforms require trusting a third party with your location history and infrastructure.
+### 🏍 Motorcycle trips and group rides
 
-NookMesh takes a different approach.
+Track your riding companions in real time directly inside Guru Maps.
 
-The entire data flow remains under your control:
+### 👨‍👩‍👧‍👦 Family and friends
 
-- The device publishes its location
-- Your MQTT broker receives it
-- Your recorder stores it
-- Your worker transforms it
-- Your API decides who can see it
-- Your map client consumes it
+Share live location with trusted people using customizable visibility rules.
 
-No external service has access to your location data unless you explicitly expose it.
+### 🥾 Outdoor activities
 
-This makes NookMesh especially suitable for users who value:
+Hiking, cycling, 4x4, or any activity where real-time coordination is useful.
 
-- privacy
-- data ownership
-- transparency
-- auditability
-- extensibility
+### 🛠 Technical users and self-hosters
+
+Ideal for users who prefer full control over infrastructure, storage, authentication, and deployment.
+
+### 📡 Hybrid transport (roadmap)
+
+Future integrations with mesh networks, gateways, and alternative location sources for scenarios without conventional mobile coverage.
 
 ---
 
-## Quick Installation
+## Quick installation
 
 ### Requirements
 
-Before deploying NookMesh, you will need:
+You will need:
 
-- A Linux server or NAS compatible with Docker
-- Docker
-- Docker Compose
+- Linux or Docker-compatible NAS
+- Docker Engine
+- Docker Compose v2
 - `jq`
 - `openssl`
-- A domain or subdomains (recommended for production)
-- Valid TLS certificates (recommended for MQTT and API)
-- OwnTracks app (iOS / Android)
-- Guru Maps (for map visualization)
+- Domain or subdomains (recommended)
+- Valid TLS certificates (recommended for production)
+- **OwnTracks** app
+- GeoJSON-compatible client (**Guru Maps recommended**)
 
-Supported environments include:
+Common compatible environments:
 
 - Synology NAS
 - Ubuntu Server
 - Debian
-- Any Linux host with Docker support
+- Linux mini PCs
+- Linux VPS
+- other Docker-compatible Linux hosts
 
 ---
 
-## Quick Start
+### Quick start
 
 Clone the repository:
 
@@ -146,7 +123,7 @@ git clone https://github.com/sercontri/nookmesh.git
 cd nookmesh
 ```
 
-Copy the example configuration files:
+Copy the example configuration:
 
 ```bash
 cp config/users.example.json config/users.json
@@ -154,21 +131,15 @@ cp config/filtros.example.env config/filtros.env
 cp config/recorder.example.env config/recorder.env
 ```
 
-Edit the configuration files for your environment:
+Edit the configuration to match your environment.
 
-```bash
-vi config/users.json
-vi config/filtros.env
-vi config/recorder.env
-```
-
-Generate authentication and runtime files:
+Generate credentials and runtime files:
 
 ```bash
 ./auth/generate.sh
 ```
 
-Start the containers:
+Start the services:
 
 ```bash
 docker compose -f mqtt/docker-compose.yml up -d
@@ -177,1214 +148,80 @@ docker compose -f worker/docker-compose.yml up -d
 docker compose -f api/docker-compose.yml up -d
 ```
 
-Verify container status:
-
-```bash
-docker ps
-```
-
----
-
-## First Deployment Workflow
-
-Recommended deployment sequence:
-
-1. Configure users (`users.json`)
-2. Configure filters (`filtros.env`)
-3. Configure recorder (`recorder.env`)
-4. Generate runtime authentication files (`generate.sh`)
-5. Start MQTT broker
-6. Start OwnTracks recorder
-7. Start GeoJSON worker
-8. Start API
-9. Configure OwnTracks clients
-10. Configure Guru Maps layer
-
----
-
-## First User Example
-
-The `config/users.json` file defines users, permissions, groups and authentication behavior.
-
-Minimal example:
-
-```json
-{
-  "users": {
-    "recorder": {
-      "enabled": true,
-      "mqtt_admin": true,
-      "mqtt_password": "CHANGE_ME",
-      "system_user": true
-    },
-    "sergio": {
-      "enabled": true,
-      "mqtt_password": "CHANGE_ME",
-      "regen_token": false,
-      "grupos": ["family"]
-    }
-  }
-}
-```
-
-After running:
-
-```bash
-./auth/generate.sh
-```
-
-NookMesh automatically generates:
-
-```text
-config/generated/mqtt-passwords.txt
-config/generated/mqtt-acl.txt
-config/generated/api-tokens.txt
-data/runtime/visibility.json
-```
-
----
-
-## What generate.sh Does
-
-The authentication generator automates:
-
-- MQTT credential generation
-- MQTT ACL generation
-- API token generation
-- runtime visibility rule generation
-- selective token regeneration
-- automatic restart of compatible running services
-
-This avoids manual editing of sensitive authentication files.
-
----
-
-## API Access
-
-After deployment, protected endpoints follow this structure:
-
-GeoJSON:
-
-```text
-https://geojson.yourdomain.com/nookmesh.geojson?token=YOUR_TOKEN
-```
-
-MapCSS:
-
-```text
-https://style.yourdomain.com/nookmesh_v1.mapcss?token=YOUR_TOKEN
-```
-
-Each user receives an individual API token.
-
----
-
-## Production Recommendations
-
-For production deployments:
-
-- use MQTT over TLS
-- use HTTPS for API access
-- avoid exposing unnecessary ports
-- secure NAS/server administrative access
-- use strong MQTT passwords
-- use individual API tokens
-- maintain regular backups
-
----
-
-## Configuration
-
-NookMesh separates configuration responsibilities into dedicated files:
-
-```text
-config/users.json
-config/filtros.env
-config/recorder.env
-```
-
----
-
-## users.json
-
-This file defines users, permissions, groups and authentication behavior.
-
-Example:
-
-```json
-{
-  "_meta": {
-    "description": "NookMesh user configuration"
-  },
-  "users": {
-    "recorder": {
-      "enabled": true,
-      "mqtt_admin": true,
-      "mqtt_password": "CHANGE_ME",
-      "system_user": true
-    },
-    "sergio": {
-      "enabled": true,
-      "mqtt_password": "CHANGE_ME",
-      "regen_token": false,
-      "grupos": ["family", "staff"],
-      "oculto_para": ["staff"],
-      "rol": "staff"
-    }
-  }
-}
-```
-
----
-
-## Available Fields
-
-### enabled
-
-Enables or disables a user.
-
-```json
-"enabled": true
-```
-
-If set to `false`, the user is ignored.
-
----
-
-### mqtt_password
-
-User MQTT password.
-
-```json
-"mqtt_password": "CHANGE_ME"
-```
-
-Used by OwnTracks to publish location updates.
-
----
-
-### mqtt_admin
-
-Grants full MQTT broker read access.
-
-```json
-"mqtt_admin": true
-```
-
-Intended for privileged users or internal services.
-
----
-
-### system_user
-
-Marks internal system users.
-
-```json
-"system_user": true
-```
-
-Typical example:
-
-- recorder
-
-System users:
-
-- do not receive API tokens
-- do not appear in map visualization
-- may receive infrastructure-specific permissions
-
----
-
-### regen_token
-
-Forces regeneration of a user's API token.
-
-```json
-"regen_token": true
-```
-
-Recommended use cases:
-
-- token compromise
-- manual revocation
-- selective rotation
-
-After regeneration, this value is automatically reset to:
-
-```json
-"regen_token": false
-```
-
-to prevent unintended future regeneration.
-
----
-
-### grupos
-
-Defines group membership.
-
-```json
-"grupos": ["family", "staff"]
-```
-
-Groups control location visibility between users.
-
----
-
-### oculto_para
-
-Hides a user from specific shared groups.
-
-```json
-"oculto_para": ["friends"]
-```
-
-Example:
-
-If a user belongs to:
-
-```json
-["family", "friends"]
-```
-
-and another user shares both groups,
-
-the hidden group will be excluded from visibility calculations.
-
----
-
-### rol
-
-Optional visual role classification.
-
-```json
-"rol": "staff"
-```
-
-Currently used for:
-
-- visual differentiation in Guru Maps
-- custom rendering logic
-- future extensibility
-
----
-
-## filtros.env
-
-Controls GeoJSON filtering behavior.
-
-Example:
-
-```env
-MAX_EDAD_MIN=60
-EXCLUDE_VIEWER_IN_OUTPUT=true
-EXCLUDE_NEARBY_METROS=80
-REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY=true
-MERGE_CLOSEST_DEVICES=true
-MERGE_MAX_METROS=100
-```
-
----
-
-## Available Filter Parameters
-
-### MAX_EDAD_MIN
-
-Maximum accepted age for location data.
-
-```env
-MAX_EDAD_MIN=60
-```
-
-Older positions are excluded.
-
----
-
-### EXCLUDE_VIEWER_IN_OUTPUT
-
-Hides the authenticated viewer's own position.
-
-```env
-EXCLUDE_VIEWER_IN_OUTPUT=true
-```
-
-Avoids duplicate display in map clients.
-
----
-
-### EXCLUDE_NEARBY_METROS
-
-Hides users located too close to the viewer.
-
-```env
-EXCLUDE_NEARBY_METROS=80
-```
-
-Reduces map clutter.
-
----
-
-### REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY
-
-Requires the viewer's own position to be recent before proximity filtering is applied.
-
-```env
-REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY=true
-```
-
-Avoids decisions based on stale viewer positions.
-
----
-
-### MERGE_CLOSEST_DEVICES
-
-Merges nearby devices belonging to the same user.
-
-```env
-MERGE_CLOSEST_DEVICES=true
-```
-
-Useful when a user publishes from multiple devices.
-
----
-
-### MERGE_MAX_METROS
-
-Maximum distance for grouping devices from the same user.
-
-If multiple devices are inside this radius, only the most recent position is shown.
-
-```env
-MERGE_MAX_METROS=100
-```
-
----
-
-## recorder.env
-
-OwnTracks Recorder configuration.
-
-Defines environment-specific parameters such as:
-
-- MQTT broker connection
-- TLS authentication
-- storage configuration
-- ports
-- service runtime configuration
-
----
-
-## Visibility Model
-
-One of NookMesh’s core features is its group-based visibility model.
-
-Unlike simple "everyone sees everyone" location sharing systems, NookMesh allows precise control over who can see whom.
-
-Visibility is calculated dynamically for every authenticated GeoJSON request.
-
----
-
-## Groups
-
-Each user can belong to one or multiple groups:
-
-```json
-"grupos": ["family", "friends", "hiking"]
-```
-
-Groups represent sharing contexts.
-
-Examples:
-
-- family
-- friends
-- work
-- hiking
-- volunteers
-- meshtastic
-- community
-
-A user will only see positions from other users with whom they share at least one visible group.
-
----
-
-## Basic Example
-
-User A:
-
-```json
-"grupos": ["family"]
-```
-
-User B:
-
-```json
-"grupos": ["family"]
-```
-
-Result:
-
-```text
-A can see B
-B can see A
-```
-
----
-
-User C:
-
-```json
-"grupos": ["work"]
-```
-
-Result:
-
-```text
-A cannot see C
-C cannot see A
-```
-
----
-
-## Multiple Groups
-
-A user may belong to several groups:
-
-```json
-"grupos": ["family", "hiking"]
-```
-
-Visibility is granted if at least one shared visible group exists.
-
-Example:
-
-User A:
-
-```json
-["family", "hiking"]
-```
-
-User B:
-
-```json
-["hiking"]
-```
-
-Result:
-
-```text
-A and B can see each other
-```
-
----
-
-## oculto_para
-
-Allows selectively hiding a user from specific groups.
-
-Example:
-
-```json
-{
-  "grupos": ["family", "friends"],
-  "oculto_para": ["friends"]
-}
-```
-
-Interpretation:
-
-- the user belongs to both groups
-- but does not want visibility through the `friends` group
-
-Result:
-
-- users sharing only `friends` will not see this user
-- users sharing `family` will still see this user
-
-This allows highly flexible partial visibility.
-
----
-
-## Real Example
-
-User:
-
-```json
-{
-  "grupos": ["family", "hiking", "friends"],
-  "oculto_para": ["friends"]
-}
-```
-
-Another user:
-
-```json
-{
-  "grupos": ["friends"]
-}
-```
-
-Result:
-
-```text
-Not visible
-```
-
----
-
-Another user:
-
-```json
-{
-  "grupos": ["family"]
-}
-```
-
-Result:
-
-```text
-Visible
-```
-
----
-
-## Roles
-
-Users may optionally define a visual role:
-
-```json
-"rol": "staff"
-```
-
-Currently this is used for:
-
-- visual differentiation in Guru Maps
-- custom rendering logic
-- future extensibility
-
-It does not currently affect visibility permissions.
-
----
-
-## mqtt_admin
-
-Some users may receive administrative MQTT access:
-
-```json
-"mqtt_admin": true
-```
-
-This grants full read access to MQTT topics:
-
-```text
-owntracks/#
-```
-
-Intended for:
-
-- administrators
-- monitoring
-- internal services
-
-This does not directly affect GeoJSON visibility.
-
----
-
-## system_user
-
-Internal infrastructure users:
-
-```json
-"system_user": true
-```
-
-Example:
-
-```json
-recorder
-```
-
-These users are excluded from map visualization.
-
-They exist only for infrastructure responsibilities.
-
----
-
-## How Visibility Is Calculated
-
-For every authenticated API request:
-
-1. The user is authenticated via API token
-2. User configuration is resolved
-3. Group membership is loaded
-4. `oculto_para` exclusions are applied
-5. Shared groups are compared
-6. Unauthorized positions are filtered
-7. Only permitted data is returned
-
-This happens dynamically in real time.
-
----
-
-## Design Philosophy
-
-NookMesh avoids rigid visibility models.
-
-Instead, it supports real-world social sharing patterns.
-
-Examples:
-
-- families sharing only among themselves
-- event-based friend visibility
-- selectively hidden users
-- community group segmentation
-- mesh network deployments with layered visibility
-
-The goal is flexibility without relying on third-party services.
-
----
-
-## OwnTracks Configuration
-
-NookMesh uses OwnTracks as its location publishing client.
-
-Supported platforms:
-
-- iPhone / iPad (iOS)
-- Android
-
-Each device publishes location updates to the NookMesh MQTT broker using individual credentials.
-
----
-
-## Basic OwnTracks Settings
-
-Configure OwnTracks as follows:
-
-### Mode
-
-```text
-Private MQTT
-```
-
----
-
-### Host
-
-Your MQTT broker hostname:
-
-```text
-mqtt.yourdomain.com
-```
-
----
-
-### Port
-
-Recommended with TLS:
-
-```text
-8883
-```
-
-Local testing without TLS:
-
-```text
-1883
-```
-
----
-
-### Username
-
-Defined in:
-
-```text
-config/users.json
-```
-
-Example:
-
-```text
-sergio
-```
-
----
-
-### Password
-
-User MQTT password:
-
-```text
-mqtt_password
-```
-
----
-
-### Device ID
-
-Device identifier.
-
-Examples:
-
-```text
-iphone
-redmi
-pixel
-car
-watch
-```
-
-Supports multi-device tracking.
-
----
-
-### Tracker ID
-
-Short visual identifier.
-
-Examples:
-
-```text
-SE
-RA
-AN
-```
-
-Used in Guru Maps visual rendering.
-
----
-
-## TLS Security
-
-Production deployments should always use:
-
-```text
-Use TLS = enabled
-```
-
-with valid certificates.
-
-This protects:
-
-- MQTT credentials
-- GPS positions
-- device metadata
-
----
-
-## MQTT Topic Structure
-
-NookMesh uses standard OwnTracks topic naming:
-
-```text
-owntracks/<user>/<device>
-```
-
-Examples:
-
-```text
-owntracks/sergio/iphone
-owntracks/raul/redmi
-```
-
----
-
-## Request Location
-
-OwnTracks supports remote location requests.
-
-Support depends on:
-
-- client implementation
-- MQTT permissions
-- client connectivity
-
-NookMesh remains compatible with the standard OwnTracks request flow.
-
----
-
-## Multi-Device Support
-
-A single user may publish from multiple devices:
-
-```text
-owntracks/sergio/iphone
-owntracks/sergio/ipad
-owntracks/sergio/car
-```
-
-NookMesh can:
-
-- display all devices
-- merge nearby devices
-- display only the most recent device depending on configuration
-
----
-
-## Map Visualization
-
-NookMesh exposes protected GeoJSON endpoints for compatible map clients.
-
-Example:
-
-GeoJSON:
-
-```text
-https://geojson.yourdomain.com/nookmesh.geojson?token=TOKEN
-```
-
-MapCSS:
-
-```text
-https://style.yourdomain.com/nookmesh_v1.mapcss?token=TOKEN
-```
-
----
-
-## Guru Maps
-
-Example Guru Maps overlay template:
-
-```text
-docs/nookmesh_gurumaps_overlay.ms
-```
-
-Recommended configuration:
-
-### GeoJSON Layer
-
-Use:
-
-```text
-https://geojson.yourdomain.com/nookmesh.geojson?token=TOKEN
-```
-
----
-
-### MapCSS Style
-
-Use:
-
-```text
-https://style.yourdomain.com/nookmesh_v1.mapcss?token=TOKEN
-```
-
----
-
-## Per-User Tokens
-
-Each user receives an individual API token.
-
-This enables:
-
-- per-user authentication
-- per-user filtering
-- selective revocation
-- simpler auditing
-
-Do not share API tokens or Guru Maps layers between users.
-
----
-
-## Compatibility
-
-NookMesh is currently optimized for:
+Configure:
 
 - OwnTracks
-- Guru Maps
+- Guru Maps (or another GeoJSON-compatible client)
+- TLS (recommended)
 
-Because output is standard GeoJSON, other compatible map clients may be supported with minimal adaptation.
-
----
-
-## Security
-
-NookMesh follows a privacy-first and least-privilege architecture.
-
-The goal is to keep infrastructure, authentication and data ownership fully under the deployer's control.
-
----
-
-## API Authentication
-
-Visual endpoints are protected with individual API tokens.
-
-Example:
+NookMesh also includes a ready-to-import example overlay for Guru Maps:
 
 ```text
-https://geojson.yourdomain.com/nookmesh.geojson?token=TOKEN
+docs/assets/gurumaps/nookmesh_gurumaps_overlay.ms
 ```
 
-Each user receives an independent token.
-
-Benefits:
-
-- individual authentication
-- selective revocation
-- user isolation
-- granular access control
+📘 Full setup instructions are available in the technical documentation.
 
 ---
 
-## Persistent Tokens
+## Privacy and security
 
-Tokens do not change automatically during normal regeneration.
+NookMesh is built around a privacy-first and data-sovereignty mindset.
 
-This prevents breaking active Guru Maps client configurations.
+With NookMesh:
 
-Tokens only change when:
+- Your location data stays on your infrastructure
+- Each user gets independent MQTT credentials
+- Each user gets an individual API token
+- Visibility between users is controlled through internal rules
+- Services can be protected with **MQTT over TLS** and **HTTPS**
+- No mandatory dependency on third-party cloud platforms
 
-```json
-"regen_token": true
-```
+Especially suitable for users who value:
 
-is enabled for a specific user and `generate.sh` is executed.
-
----
-
-## MQTT Authentication
-
-Each user has independent MQTT credentials:
-
-```json
-"mqtt_password": "..."
-```
-
-Credentials are never shared.
-
-Benefits:
-
-- isolated access
-- per-user revocation
-- simpler auditing
-- MQTT permission control
+- privacy
+- control
+- transparency
+- auditability
+- self-hosting
 
 ---
 
-## MQTT ACL
+## Documentation
 
-NookMesh automatically generates MQTT ACL rules.
+Technical documentation includes:
 
-Regular users:
-
-```text
-owntracks/<user>/#
-```
-
-MQTT administrators:
-
-```text
-owntracks/#
-```
-
-This avoids manual editing of sensitive broker permissions.
-
----
-
-## Recommended TLS Usage
-
-Production deployments should use:
-
-- MQTT over TLS
-- HTTPS for API access
-- valid certificates
-
-This protects:
-
-- credentials
-- GPS positions
-- metadata
-- authentication traffic
-
----
-
-## No Mandatory Cloud Dependency
-
-NookMesh does not depend on third-party cloud services.
-
-Your data remains inside your infrastructure:
-
-- MQTT broker
-- recorder
-- API
-- storage
-- configuration
-
----
-
-## Service Separation
-
-The multi-service architecture reduces attack surface.
-
-Logical separation:
-
-- MQTT broker
-- recorder
-- worker
-- API
-- authentication generator
-
-Benefits:
-
-- maintainability
-- isolation
+- detailed installation
+- user configuration
+- visibility model
+- OwnTracks integration
+- Guru Maps integration
+- visual customization with MapCSS
+- MQTT and TLS
+- security and authentication
+- GeoJSON endpoints
+- internal architecture
 - troubleshooting
-- scalability
+- technical roadmap
 
----
-
-## Troubleshooting
-
-## Devices Do Not Appear
-
-Check:
-
-- MQTT container is running
-- recorder container is running
-- MQTT credentials are correct
-- OwnTracks configuration is correct
-- TLS is properly configured
-- client connectivity to the broker
-
-View logs:
-
-```bash
-docker logs nookmesh-mqtt
-docker logs nookmesh-recorder
-```
-
----
-
-## GeoJSON Is Not Generated
-
-Check:
-
-- worker container is running
-- recorder storage is accessible
-- mounted paths are correct
-- file permissions are valid
-
-View logs:
-
-```bash
-docker logs nookmesh-worker
-```
-
----
-
-## API Returns Access Denied
-
-Check:
-
-- API token is correct
-- user is enabled
-- token has not been revoked
-- generated runtime configuration is up to date
-
-Regenerate runtime files:
-
-```bash
-./auth/generate.sh
-```
-
----
-
-## Other Users Do Not Appear
-
-Check:
-
-- shared groups
-- `oculto_para` rules
-- position age filtering
-- proximity filters
-- viewer self-exclusion settings
-
----
-
-## OwnTracks Connects but Does Not Publish
-
-Check:
-
-- host
-- port
-- TLS settings
-- username
-- MQTT password
-- ACL permissions
-
-Expected topic format:
-
-```text
-owntracks/<user>/<device>
-```
-
----
-
-## Guru Maps Issues
-
-Check:
-
-- correct GeoJSON URL
-- correct MapCSS URL
-- valid API token
-- HTTPS accessibility
-- application cache
-
-Manual test:
-
-```text
-https://geojson.yourdomain.com/nookmesh.geojson?token=TOKEN
-```
-
----
-
-## Credential Regeneration
-
-After changing users or permissions:
-
-```bash
-./auth/generate.sh
-```
-
-This updates:
-
-- MQTT passwords
-- MQTT ACL
-- API tokens
-- runtime visibility configuration
-
----
-
-## Project Status
-
-NookMesh is an actively evolving project.
-
-The current architecture is functional and used in production, but the platform will continue to evolve.
-
-Planned improvement areas include:
-
-- expanded documentation
-- official website
-- additional client integrations
-- simplified deployment tooling
-- improved observability
-- visual enhancements
-- advanced filtering options
+📘 **[Full technical documentation](docs/INDEX.md)**
 
 ---
 
 ## Roadmap
 
-Planned goals:
+NookMesh is an active evolving project.
 
-- full web documentation
-- deployment examples
-- broader GeoJSON client compatibility
-- authentication improvements
-- better administration tooling
+Planned areas of development:
+
+- hybrid mesh integrations
+- LTE + mesh deployments
+- support for more GeoJSON clients
+- administration tools
+- improved observability
 - more modular configuration
-- additional map client integrations
+- easier deployment experience
+- web documentation portal (Docusaurus)
 
 ---
 
@@ -1392,63 +229,38 @@ Planned goals:
 
 Contributions are welcome.
 
-Ways to contribute:
+You can help by:
 
-- Open issues
-- Propose improvements
-- Report bugs
-- Improve documentation
-- Suggest integrations
-- Submit pull requests
+- reporting bugs
+- proposing improvements
+- improving documentation
+- suggesting integrations
+- submitting pull requests
+- sharing real-world use cases
 
-Before contributing:
+If contributing code:
 
-- Never include secrets
-- Use example configuration files
-- Maintain architectural consistency
-- Document meaningful changes
-
----
-
-## Project Philosophy
-
-NookMesh started from a simple idea:
-
-**location sharing should not require handing your data to third parties.**
-
-The project is built around:
-
-- privacy
-- control
-- transparency
-- self-hosting
-- technical simplicity
-- extensibility
+- do not include secrets or real credentials
+- use example configuration files
+- keep consistency with the current architecture
+- document relevant changes
 
 ---
 
-## Support
+## Support the project
 
-If NookMesh is useful to you, there are several ways to support the project:
+NookMesh is an independent project developed in personal time.
 
-- Star the repository
-- Report bugs and suggest improvements
-- Contribute code or documentation
-- Share the project with others
-- Support independent development on Ko-fi:
+If you find it useful, you can support it by:
 
-https://ko-fi.com/nooktrail
+- ⭐ starring the repository
+- 🐞 reporting bugs or improvements
+- 📖 improving documentation
+- 🔀 contributing code
+- 📣 sharing the project
+- ☕ supporting development on [Ko-fi](https://ko-fi.com/nooktrail)
 
-Your support helps maintain infrastructure, improve documentation, and continue building privacy-first open tools for the community.
-
----
-
-## Example Assets
-
-Additional resources are available in `/docs`:
-
-- Spanish documentation (`README.es.md`)
-- Guru Maps overlay template (`nookmesh_gurumaps_overlay.ms`)
+Your support helps maintain test infrastructure, improve documentation, and continue developing privacy-focused open tools.
 
 ---
 
@@ -1456,16 +268,14 @@ Additional resources are available in `/docs`:
 
 NookMesh is distributed under the **GNU Affero General Public License v3.0 (AGPLv3)**.
 
-In summary:
+In short:
 
-- you may use NookMesh freely
-- you may modify it
-- you may deploy it on your own infrastructure
-- you may redistribute it
-- you may use it as part of a service
+- you can use it freely
+- you can modify it
+- you can deploy it on your own infrastructure
+- you can redistribute it
+- you can offer services based on NookMesh, respecting AGPLv3 obligations
 
-However, if you modify NookMesh and offer it as a network-accessible service, you must make those modifications available under the same license.
+If you modify the project and make it available as a network-accessible service, those modifications must remain under the same license.
 
-The goal is to protect the freedom of the project and ensure improvements return to the community.
-
-See the `LICENSE` file for the full legal text.
+See [LICENSE](LICENSE) for the full legal text.
