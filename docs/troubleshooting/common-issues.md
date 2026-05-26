@@ -28,8 +28,6 @@ The most effective way to diagnose issues is to identify where the flow breaks.
 
 # I can't see locations in Guru Maps
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptom:
 
 ```text
@@ -80,8 +78,6 @@ the problem is in the backend, authentication, or connectivity.
 
 # OwnTracks connects but no data appears
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptom:
 
 ```text
@@ -108,8 +104,6 @@ Check:
 ---
 
 # OwnTracks cannot connect to the MQTT broker
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Symptoms:
 
@@ -138,8 +132,6 @@ docker logs nookmesh-mqtt
 
 # MQTT auth failed
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Typical causes:
 
 - incorrect password
@@ -166,8 +158,6 @@ If you changed users:
 
 # Recorder is not receiving messages
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptom:
 
 MQTT works but recorder does not process data.
@@ -188,8 +178,6 @@ docker logs nookmesh-recorder
 ---
 
 # Worker does not generate GeoJSON
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Symptom:
 
@@ -217,8 +205,6 @@ data/owntracks/store/last/
 ---
 
 # API returns access denied
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Symptom:
 
@@ -251,8 +237,6 @@ If users were modified:
 ---
 
 # Empty GeoJSON
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Symptom:
 
@@ -289,8 +273,6 @@ EXCLUDE_VIEWER_IN_OUTPUT
 
 # One user cannot see another
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptom:
 
 user authenticates correctly
@@ -322,8 +304,6 @@ the user belongs to the group but will not be visible through that context.
 
 # Stale data
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptom:
 
 old or frozen locations.
@@ -347,8 +327,6 @@ Check:
 
 # Guru Maps does not refresh
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptom:
 
 valid data exists but the display appears frozen.
@@ -368,8 +346,6 @@ Check:
 ---
 
 # TLS does not work
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Symptoms:
 
@@ -397,8 +373,6 @@ reverse proxy
 ---
 
 # Docker containers are down
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Check:
 
@@ -428,8 +402,6 @@ docker logs nookmesh-api
 
 # DNS problems
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptoms:
 
 - MQTT cannot connect
@@ -453,8 +425,6 @@ dig geojson.yourdomain.com
 
 # generate.sh changes are not applied
 
-🇪🇸 [Versión en español](common-issues.es.md)
-
 Symptom:
 
 `users.json` is modified but the system still uses old configuration.
@@ -477,8 +447,6 @@ It also automatically restarts compatible services if they are running.
 ---
 
 # Recommended diagnostic method
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Order:
 
@@ -519,8 +487,6 @@ Is Guru Maps consuming it correctly?
 ---
 
 # If everything fails
-
-🇪🇸 [Versión en español](common-issues.es.md)
 
 Walk through the full pipeline:
 

@@ -21,8 +21,6 @@ identidad lógica ≠ dispositivo físico
 
 # Concepto base
 
-🇬🇧 [English version](multi-device.md)
-
 En NookMesh:
 
 ## Usuario
@@ -77,8 +75,6 @@ Forma parte de un usuario existente.
 
 # Relación con OwnTracks
 
-🇬🇧 [English version](multi-device.md)
-
 OwnTracks publica usando estructura MQTT:
 
 ```text
@@ -101,8 +97,6 @@ Aquí:
 ---
 
 # Persistencia interna
-
-🇬🇧 [English version](multi-device.md)
 
 OwnTracks Recorder almacena cada dispositivo de forma independiente.
 
@@ -131,8 +125,6 @@ Cada dispositivo mantiene su propia última posición persistida.
 
 # Cómo procesa NookMesh los dispositivos
 
-🇬🇧 [English version](multi-device.md)
-
 El exporter recorre todos los dispositivos encontrados.
 
 Conceptualmente:
@@ -150,8 +142,6 @@ Esto significa que múltiples dispositivos del mismo usuario se procesan individ
 ---
 
 # Requisito importante
-
-🇬🇧 [English version](multi-device.md)
 
 Para que varios dispositivos pertenezcan a la misma identidad lógica:
 
@@ -177,8 +167,6 @@ En ese caso NookMesh los tratará como usuarios distintos.
 
 # Usuario debe existir en NookMesh
 
-🇬🇧 [English version](multi-device.md)
-
 Si un dispositivo publica con un usuario no definido en:
 
 ```text
@@ -202,8 +190,6 @@ Esto evita exposición accidental de usuarios desconocidos.
 ---
 
 # Merge de dispositivos
-
-🇬🇧 [English version](multi-device.md)
 
 NookMesh puede consolidar dispositivos cercanos del mismo usuario.
 
@@ -297,8 +283,6 @@ se conserva ipad.
 
 # Si merge está desactivado
 
-🇬🇧 [English version](multi-device.md)
-
 Con:
 
 ```env
@@ -321,8 +305,6 @@ sergio/tracker
 
 # Representación visual
 
-🇬🇧 [English version](multi-device.md)
-
 La API genera representación visual a partir de cada feature final.
 
 Cada ubicación visible produce:
@@ -343,8 +325,6 @@ Por eso un único usuario visible puede traducirse internamente en varias entida
 ---
 
 # Casos de uso
-
-🇬🇧 [English version](multi-device.md)
 
 ## Cambio de móvil
 
@@ -404,8 +384,6 @@ Permite validar comportamiento sin crear nuevos usuarios.
 
 # Buenas prácticas
 
-🇬🇧 [English version](multi-device.md)
-
 ## Mantener identidad estable
 
 Mejor:
@@ -463,8 +441,6 @@ Desactivado:
 
 # Seguridad
 
-🇬🇧 [English version](multi-device.md)
-
 La autenticación MQTT se aplica al usuario lógico.
 
 No existe autenticación independiente por dispositivo.
@@ -483,8 +459,6 @@ comparten:
 ---
 
 # Futuro
-
-🇬🇧 [English version](multi-device.md)
 
 Este diseño facilita integraciones futuras con múltiples fuentes físicas.
 

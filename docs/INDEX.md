@@ -8,8 +8,6 @@ This documentation describes the current architecture, installation, configurati
 
 If you're looking for a general overview, use cases, or introductory information, refer to the main project README.
 
----
-
 ## Scope of this documentation
 
 Here you'll find information about:

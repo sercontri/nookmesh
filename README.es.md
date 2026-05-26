@@ -15,13 +15,9 @@ Nació inicialmente para viajes en moto entre amigos, pero su arquitectura modul
 
 > ⚠️ Proyecto en evolución activa. La arquitectura principal es funcional y utilizable, aunque algunas capacidades continúan refinándose.
 
----
-
 ## NookMesh en acción
 
 ![NookMesh funcionando en Guru Maps](docs/assets/images/nookmesh-gurumaps-main.png)
-
----
 
 ## Qué ofrece
 
@@ -35,8 +31,6 @@ Nació inicialmente para viajes en moto entre amigos, pero su arquitectura modul
 - Despliegue seguro mediante TLS (recomendado)
 - Base preparada para futuras integraciones híbridas
 
----
-
 ## Stack actual
 
 NookMesh utiliza actualmente:
@@ -48,8 +42,6 @@ NookMesh utiliza actualmente:
 - Docker
 - GeoJSON
 - Guru Maps
-
----
 
 ## Cómo funciona
 
@@ -185,8 +177,6 @@ Especialmente pensado para quienes valoran:
 - auditabilidad
 - autoalojamiento
 
----
-
 ## Documentación
 
 La documentación técnica incluye:
@@ -206,8 +196,6 @@ La documentación técnica incluye:
 
 📘 **[Documentación técnica completa](docs/INDEX.es.md)**
 
----
-
 ## Hoja de ruta
 
 NookMesh es un proyecto activo en evolución.
@@ -222,8 +210,6 @@ Líneas previstas de desarrollo:
 - configuración más modular
 - mejor experiencia de despliegue
 - portal web de documentación (Docusaurus)
-
----
 
 ## Contribuir
 
@@ -245,8 +231,6 @@ Si contribuyes con código:
 - mantén coherencia con la arquitectura actual
 - documenta cambios relevantes
 
----
-
 ## Apoya el proyecto
 
 NookMesh es un proyecto independiente desarrollado en tiempo personal.
@@ -261,8 +245,6 @@ Si te resulta útil, puedes apoyar:
 - ☕ apoyar el desarrollo en [Ko-fi](https://ko-fi.com/nooktrail)
 
 Tu apoyo ayuda a mantener infraestructura de pruebas, mejorar documentación y continuar desarrollando herramientas abiertas centradas en privacidad.
-
----
 
 ## Licencia
 

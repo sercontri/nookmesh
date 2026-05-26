@@ -61,8 +61,6 @@ docker restart nookmesh-api
 
 # Parámetros disponibles
 
-🇬🇧 [English version](filters.md)
-
 ## TIMEZONE
 
 Zona horaria utilizada para timestamps legibles incluidos en descripciones GeoJSON.
@@ -425,8 +423,6 @@ NookMesh prioriza:
 
 # Relación con otros componentes
 
-🇬🇧 [English version](filters.md)
-
 ## Visibilidad
 
 Estos filtros NO deciden:
@@ -476,8 +472,6 @@ La API también aplica lógica adicional:
 
 # Ejemplo práctico
 
-🇬🇧 [English version](filters.md)
-
 Supongamos:
 
 - viewer autenticado con posición reciente
@@ -500,8 +494,6 @@ Resultado:
 ---
 
 # Buenas prácticas
-
-🇬🇧 [English version](filters.md)
 
 ## Viajes en grupo
 
@@ -532,8 +524,6 @@ Filtros demasiado agresivos pueden ocultar información útil.
 ---
 
 # Troubleshooting
-
-🇬🇧 [English version](filters.md)
 
 ## No aparece un usuario
 

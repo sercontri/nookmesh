@@ -8,8 +8,6 @@ Esta documentación describe la arquitectura, instalación, configuración, inte
 
 Si buscas una visión general, casos de uso o información introductoria, consulta el README principal del repositorio.
 
----
-
 ## Alcance de esta documentación
 
 Aquí encontrarás información sobre:

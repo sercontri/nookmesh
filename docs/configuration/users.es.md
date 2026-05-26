@@ -85,8 +85,6 @@ Esto permite construir modelos de visibilidad mucho más flexibles que un simple
 
 # Estructura del archivo
 
-🇬🇧 [English version](users.md)
-
 ## `_meta`
 
 Información descriptiva del archivo.
@@ -132,8 +130,6 @@ recorder
 ---
 
 # Campos de usuario
-
-🇬🇧 [English version](users.md)
 
 ## `enabled`
 
@@ -346,8 +342,6 @@ Se utilizan para comunicación interna entre componentes.
 
 # Multi-dispositivo
 
-🇬🇧 [English version](users.md)
-
 Una misma identidad lógica puede operar desde varios dispositivos físicos.
 
 Ejemplo:
@@ -382,8 +376,6 @@ El comportamiento detallado se documenta en:
 ---
 
 # Buenas prácticas
-
-🇬🇧 [English version](users.md)
 
 ## Separar usuarios reales y cuentas internas
 
@@ -461,8 +453,6 @@ tmp
 
 # Seguridad
 
-🇬🇧 [English version](users.md)
-
 Este archivo contiene información sensible.
 
 Debe:
@@ -481,8 +471,6 @@ users.example.json
 
 # Relación con otros componentes
 
-🇬🇧 [English version](users.md)
-
 Este archivo influye directamente en:
 
 - autenticación MQTT
@@ -494,8 +482,6 @@ Este archivo influye directamente en:
 ---
 
 # Siguiente paso
-
-🇬🇧 [English version](users.md)
 
 Continúa con:
 

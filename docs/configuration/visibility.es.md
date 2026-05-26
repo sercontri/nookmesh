@@ -52,8 +52,6 @@ oculto_para
 
 # Campos implicados
 
-🇬🇧 [English version](visibility.md)
-
 ## `grupos`
 
 Define los ámbitos de pertenencia del usuario.
@@ -103,8 +101,6 @@ Solo afecta a relaciones construidas mediante esos grupos.
 ---
 
 # Lógica real de visibilidad
-
-🇬🇧 [English version](visibility.md)
 
 La implementación actual aplica conceptualmente:
 
@@ -211,8 +207,6 @@ Porque sigue existiendo un grupo compartido válido.
 
 # Casos prácticos
 
-🇬🇧 [English version](visibility.md)
-
 ## Familia
 
 Todos visibles entre sí:
@@ -271,8 +265,6 @@ permite aislar visibilidad profesional del resto de contextos.
 
 # Usuarios sin grupos
 
-🇬🇧 [English version](visibility.md)
-
 Si un usuario no tiene grupos:
 
 ```json
@@ -299,8 +291,6 @@ Los grupos son obligatorios para participar en el modelo de visibilidad.
 
 # Usuarios internos del sistema
 
-🇬🇧 [English version](visibility.md)
-
 Usuarios marcados como:
 
 ```json
@@ -325,8 +315,6 @@ No:
 ---
 
 # Runtime interno
-
-🇬🇧 [English version](visibility.md)
 
 Durante:
 
@@ -360,8 +348,6 @@ Ejemplo:
 ---
 
 # Qué NO afecta visibilidad
-
-🇬🇧 [English version](visibility.md)
 
 ## `rol`
 
@@ -400,8 +386,6 @@ Solo publica ubicaciones.
 ---
 
 # Resolución del flujo
-
-🇬🇧 [English version](visibility.md)
 
 Proceso simplificado:
 
@@ -454,8 +438,6 @@ Solo se entregan usuarios autorizados.
 
 # Buenas prácticas
 
-🇬🇧 [English version](visibility.md)
-
 ## Usar nombres de grupo claros
 
 Mejor:
@@ -496,8 +478,6 @@ Pensar en:
 ---
 
 # Seguridad y privacidad
-
-🇬🇧 [English version](visibility.md)
 
 Este modelo permite:
 

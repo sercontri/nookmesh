@@ -10,8 +10,6 @@ While testing in controlled environments without encryption is possible, all sen
 
 # Purpose
 
-🇪🇸 [Versión en español](tls.es.md)
-
 TLS protects:
 
 - MQTT credentials
@@ -31,8 +29,6 @@ This reduces risks such as:
 ---
 
 # Services that should be protected
-
-🇪🇸 [Versión en español](tls.es.md)
 
 In a typical NookMesh deployment:
 
@@ -100,8 +96,6 @@ Any future web interface or additional service should also be exposed via HTTPS.
 
 # Secure MQTT
 
-🇪🇸 [Versión en español](tls.es.md)
-
 Without encryption:
 
 ```text
@@ -130,8 +124,6 @@ Benefits:
 ---
 
 # Secure API
-
-🇪🇸 [Versión en español](tls.es.md)
 
 Without encryption:
 
@@ -163,8 +155,6 @@ the token can be intercepted easily.
 
 # Important note about tokens in URLs
 
-🇪🇸 [Versión en español](tls.es.md)
-
 HTTPS protects transport.
 
 But it does not eliminate other operational risks.
@@ -186,8 +176,6 @@ Best practices:
 ---
 
 # Certificates
-
-🇪🇸 [Versión en español](tls.es.md)
 
 ## Let's Encrypt
 
@@ -251,8 +239,6 @@ For public deployments, a public CA is usually preferable.
 
 # Recommended topology
 
-🇪🇸 [Versión en español](tls.es.md)
-
 Typical architecture:
 
 ```text
@@ -287,8 +273,6 @@ MapCSS endpoint
 
 # Common ports
 
-🇪🇸 [Versión en español](tls.es.md)
-
 ## MQTT without TLS
 
 ```text
@@ -315,8 +299,6 @@ MapCSS endpoint
 
 # OwnTracks and TLS
 
-🇪🇸 [Versión en español](tls.es.md)
-
 OwnTracks supports secure MQTT via TLS.
 
 Typical configuration:
@@ -340,8 +322,6 @@ additional manual configuration may be required depending on platform.
 
 # API security
 
-🇪🇸 [Versión en español](tls.es.md)
-
 In addition to HTTPS:
 
 recommended practices include:
@@ -355,8 +335,6 @@ recommended practices include:
 ---
 
 # Lab environments
-
-🇪🇸 [Versión en español](tls.es.md)
 
 Temporarily acceptable:
 
@@ -374,8 +352,6 @@ Not recommended for real usage.
 ---
 
 # Best practices
-
-🇪🇸 [Versión en español](tls.es.md)
 
 ## Never expose sensitive services without encryption
 
@@ -417,8 +393,6 @@ It does not replace:
 ---
 
 # Risks of not using TLS
-
-🇪🇸 [Versión en español](tls.es.md)
 
 Without encryption, the following may be exposed:
 

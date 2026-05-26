@@ -52,8 +52,6 @@ oculto_para
 
 # Involved fields
 
-🇪🇸 [Versión en español](visibility.es.md)
-
 ## `grupos`
 
 Defines the user's membership scopes.
@@ -103,8 +101,6 @@ It only affects relationships built through those groups.
 ---
 
 # Actual visibility logic
-
-🇪🇸 [Versión en español](visibility.es.md)
 
 The current implementation conceptually applies:
 
@@ -211,8 +207,6 @@ Because at least one valid shared group still exists.
 
 # Practical scenarios
 
-🇪🇸 [Versión en español](visibility.es.md)
-
 ## Family
 
 Everyone visible to each other:
@@ -271,8 +265,6 @@ allows professional visibility to remain isolated from other contexts.
 
 # Users without groups
 
-🇪🇸 [Versión en español](visibility.es.md)
-
 If a user has no groups:
 
 ```json
@@ -299,8 +291,6 @@ Groups are required to participate in the visibility model.
 
 # Internal system users
 
-🇪🇸 [Versión en español](visibility.es.md)
-
 Users marked as:
 
 ```json
@@ -325,8 +315,6 @@ They:
 ---
 
 # Internal runtime
-
-🇪🇸 [Versión en español](visibility.es.md)
 
 During:
 
@@ -360,8 +348,6 @@ Example:
 ---
 
 # What does NOT affect visibility
-
-🇪🇸 [Versión en español](visibility.es.md)
 
 ## `rol`
 
@@ -400,8 +386,6 @@ It only publishes locations.
 ---
 
 # Resolution flow
-
-🇪🇸 [Versión en español](visibility.es.md)
 
 Simplified process:
 
@@ -454,8 +438,6 @@ Only authorized users are delivered.
 
 # Best practices
 
-🇪🇸 [Versión en español](visibility.es.md)
-
 ## Use clear group names
 
 Better:
@@ -496,8 +478,6 @@ Think in terms of:
 ---
 
 # Security and privacy
-
-🇪🇸 [Versión en español](visibility.es.md)
 
 This model enables:
 

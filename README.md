@@ -15,13 +15,9 @@ It originally started as a motorcycle group travel project, but its modular arch
 
 > ⚠️ Active project under ongoing development. The core architecture is functional and usable, though some capabilities are still being refined.
 
----
-
 ## NookMesh in action
 
 ![NookMesh running in Guru Maps](docs/assets/images/nookmesh-gurumaps-main.png)
-
----
 
 ## Features
 
@@ -35,8 +31,6 @@ It originally started as a motorcycle group travel project, but its modular arch
 - Secure deployment with TLS (recommended)
 - Foundation for future hybrid integrations
 
----
-
 ## Current stack
 
 NookMesh currently uses:
@@ -48,8 +42,6 @@ NookMesh currently uses:
 - Docker
 - GeoJSON
 - Guru Maps
-
----
 
 ## How it works
 
@@ -185,8 +177,6 @@ Especially suitable for users who value:
 - auditability
 - self-hosting
 
----
-
 ## Documentation
 
 Technical documentation includes:
@@ -206,8 +196,6 @@ Technical documentation includes:
 
 📘 **[Full technical documentation](docs/INDEX.md)**
 
----
-
 ## Roadmap
 
 NookMesh is an active evolving project.
@@ -222,8 +210,6 @@ Planned areas of development:
 - more modular configuration
 - easier deployment experience
 - web documentation portal (Docusaurus)
-
----
 
 ## Contributing
 
@@ -245,8 +231,6 @@ If contributing code:
 - keep consistency with the current architecture
 - document relevant changes
 
----
-
 ## Support the project
 
 NookMesh is an independent project developed in personal time.
@@ -261,8 +245,6 @@ If you find it useful, you can support it by:
 - ☕ supporting development on [Ko-fi](https://ko-fi.com/nooktrail)
 
 Your support helps maintain test infrastructure, improve documentation, and continue developing privacy-focused open tools.
-
----
 
 ## License
 
