@@ -1,5 +1,7 @@
 # Componentes
 
+🇬🇧 [English version](components.md)
+
 Este documento describe los componentes principales que forman la arquitectura actual de NookMesh y su responsabilidad dentro del sistema.
 
 ---

@@ -1,5 +1,7 @@
 # Hybrid Architecture Roadmap
 
+🇪🇸 [Versión en español](hybrid-location-roadmap.es.md)
+
 > Roadmap — future vision, not currently implemented
 
 NookMesh was initially created as a self-hosted real-time location sharing platform based on **OwnTracks + MQTT + Docker + GeoJSON API**.

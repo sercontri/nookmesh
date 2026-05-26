@@ -1,5 +1,7 @@
 # Autenticación
 
+🇬🇧 [English version](authentication.md)
+
 NookMesh protege el acceso a datos de ubicación mediante autenticación individual y validación en backend.
 
 El objetivo es evitar exposición accidental o acceso no autorizado a ubicaciones sensibles.

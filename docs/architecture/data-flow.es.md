@@ -1,5 +1,7 @@
 # Flujo de datos
 
+🇬🇧 [English version](data-flow.md)
+
 Este documento describe el recorrido completo de una ubicación desde el dispositivo del usuario hasta su visualización final en el cliente.
 
 ---

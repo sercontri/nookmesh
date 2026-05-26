@@ -1,5 +1,7 @@
 # Visual Customization with MapCSS
 
+🇪🇸 [Versión en español](mapcss.es.md)
+
 NookMesh allows visual customization of location rendering in compatible clients through **MapCSS**.
 
 Currently, the primary client leveraging this capability is:

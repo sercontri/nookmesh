@@ -1,5 +1,7 @@
 # Operational Filters
 
+🇪🇸 [Versión en español](filters.es.md)
+
 NookMesh allows adjustment of the operational behavior of the GeoJSON pipeline through parameters defined in:
 
 ```text
@@ -58,6 +60,8 @@ docker restart nookmesh-api
 ---
 
 # Available parameters
+
+🇪🇸 [Versión en español](filters.es.md)
 
 ## TIMEZONE
 
@@ -423,6 +427,8 @@ NookMesh prioritizes:
 
 # Relationship with other components
 
+🇪🇸 [Versión en español](filters.es.md)
+
 ## Visibility
 
 These filters do NOT determine:
@@ -472,6 +478,8 @@ The API also applies additional logic:
 
 # Practical example
 
+🇪🇸 [Versión en español](filters.es.md)
+
 Suppose:
 
 - authenticated viewer with a recent position
@@ -494,6 +502,8 @@ Result:
 ---
 
 # Best practices
+
+🇪🇸 [Versión en español](filters.es.md)
 
 ## Group rides
 
@@ -524,6 +534,8 @@ Overly aggressive filters may hide useful information.
 ---
 
 # Troubleshooting
+
+🇪🇸 [Versión en español](filters.es.md)
 
 ## A user does not appear
 

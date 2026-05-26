@@ -1,5 +1,7 @@
 # Visión general de arquitectura
 
+🇬🇧 [English version](overview.md)
+
 NookMesh es una plataforma self-hosted de compartición de ubicación en tiempo real basada en componentes desacoplados que cooperan entre sí.
 
 La arquitectura está diseñada con foco en:

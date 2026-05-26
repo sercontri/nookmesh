@@ -1,5 +1,7 @@
 # Architecture Overview
 
+🇪🇸 [Versión en español](overview.es.md)
+
 NookMesh is a self-hosted real-time location sharing platform built around decoupled components that work together.
 
 The architecture is designed with a focus on:

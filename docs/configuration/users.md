@@ -1,5 +1,7 @@
 # Users
 
+🇪🇸 [Versión en español](users.es.md)
+
 NookMesh allows management of multiple users with individualized authentication, visibility, and operational behavior settings.
 
 All primary identity configuration is defined in:
@@ -83,6 +85,8 @@ This allows building visibility models far more flexible than a simple global sh
 
 # File structure
 
+🇪🇸 [Versión en español](users.es.md)
+
 ## `_meta`
 
 Descriptive file metadata.
@@ -128,6 +132,8 @@ recorder
 ---
 
 # User fields
+
+🇪🇸 [Versión en español](users.es.md)
 
 ## `enabled`
 
@@ -340,6 +346,8 @@ They are used for internal communication between components.
 
 # Multi-device
 
+🇪🇸 [Versión en español](users.es.md)
+
 A single logical identity may operate from multiple physical devices.
 
 Example:
@@ -374,6 +382,8 @@ Detailed behavior is documented in:
 ---
 
 # Best practices
+
+🇪🇸 [Versión en español](users.es.md)
 
 ## Separate real users and internal accounts
 
@@ -451,6 +461,8 @@ tmp
 
 # Security
 
+🇪🇸 [Versión en español](users.es.md)
+
 This file contains sensitive information.
 
 It should:
@@ -469,6 +481,8 @@ users.example.json
 
 # Relationship with other components
 
+🇪🇸 [Versión en español](users.es.md)
+
 This file directly affects:
 
 - MQTT authentication
@@ -480,6 +494,8 @@ This file directly affects:
 ---
 
 # Next steps
+
+🇪🇸 [Versión en español](users.es.md)
 
 Continue with:
 

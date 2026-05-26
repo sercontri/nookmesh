@@ -1,5 +1,7 @@
 # MQTT
 
+🇪🇸 [Versión en español](mqtt.es.md)
+
 NookMesh uses MQTT as the messaging backbone for real-time location transport.
 
 The current implementation is based on:
@@ -13,6 +15,8 @@ MQTT allows publication, transport, and location persistence to remain decoupled
 ---
 
 # MQTT's role in NookMesh
+
+🇪🇸 [Versión en español](mqtt.es.md)
 
 Main flow:
 
@@ -46,6 +50,8 @@ It does not directly participate in:
 
 # Current broker
 
+🇪🇸 [Versión en español](mqtt.es.md)
+
 NookMesh uses:
 
 ```text
@@ -69,6 +75,8 @@ This enables:
 
 # Topics used
 
+🇪🇸 [Versión en español](mqtt.es.md)
+
 OwnTracks publishes using the standard structure:
 
 ```text
@@ -91,6 +99,8 @@ Structure:
 ---
 
 # MQTT users
+
+🇪🇸 [Versión en español](mqtt.es.md)
 
 Each user has independent MQTT credentials defined in:
 
@@ -130,6 +140,8 @@ Advantages:
 ---
 
 # Internal recorder user
+
+🇪🇸 [Versión en español](mqtt.es.md)
 
 NookMesh uses a required internal technical account:
 
@@ -173,6 +185,8 @@ It does not represent a human user.
 ---
 
 # MQTT ACLs
+
+🇪🇸 [Versión en español](mqtt.es.md)
 
 NookMesh automatically generates:
 
@@ -258,6 +272,8 @@ Internal use only.
 
 # How authentication works
 
+🇪🇸 [Versión en español](mqtt.es.md)
+
 Simplified process:
 
 ### 1. OwnTracks connects
@@ -309,6 +325,8 @@ OwnTracks → Recorder
 
 # Changing MQTT credentials
 
+🇪🇸 [Versión en español](mqtt.es.md)
+
 To change credentials:
 
 ### 1. Edit
@@ -345,6 +363,8 @@ and restarts compatible active services.
 ---
 
 # Recommended security
+
+🇪🇸 [Versión en español](mqtt.es.md)
 
 ## Mandatory authentication
 
@@ -397,6 +417,8 @@ when genuinely required.
 ---
 
 # Troubleshooting
+
+🇪🇸 [Versión en español](mqtt.es.md)
 
 ## OwnTracks cannot connect
 
@@ -456,6 +478,8 @@ API
 
 # Best practices
 
+🇪🇸 [Versión en español](mqtt.es.md)
+
 ## One credential per user
 
 Do not share MQTT accounts between different people.
@@ -481,6 +505,8 @@ Especially if the broker is accessible from the Internet.
 ---
 
 # Relationship with other components
+
+🇪🇸 [Versión en español](mqtt.es.md)
 
 MQTT connects:
 

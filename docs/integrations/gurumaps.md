@@ -1,5 +1,7 @@
 # Guru Maps Integration
 
+🇪🇸 [Versión en español](gurumaps.es.md)
+
 NookMesh’s primary visualization integration is currently designed for **Guru Maps**.
 
 Guru Maps can consume custom GeoJSON sources and apply advanced visual styling through MapCSS, making it a particularly powerful client for real-time location visualization.

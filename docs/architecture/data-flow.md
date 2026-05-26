@@ -1,5 +1,7 @@
 # Data Flow
 
+🇪🇸 [Versión en español](data-flow.es.md)
+
 This document describes the complete journey of a location update from the user's device to its final visualization in the client.
 
 ---

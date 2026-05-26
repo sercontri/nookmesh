@@ -1,5 +1,7 @@
 # Multi-device
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 NookMesh allows a single logical identity to use multiple physical devices simultaneously.
 
 This enables scenarios where a user:
@@ -18,6 +20,8 @@ logical identity ≠ physical device
 ---
 
 # Core concept
+
+🇪🇸 [Versión en español](multi-device.es.md)
 
 In NookMesh:
 
@@ -73,6 +77,8 @@ It belongs to an existing user.
 
 # Relationship with OwnTracks
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 OwnTracks publishes using the MQTT structure:
 
 ```text
@@ -95,6 +101,8 @@ Here:
 ---
 
 # Internal persistence
+
+🇪🇸 [Versión en español](multi-device.es.md)
 
 OwnTracks Recorder stores each device independently.
 
@@ -123,6 +131,8 @@ Each device maintains its own latest persisted location.
 
 # How NookMesh processes devices
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 The exporter scans all discovered devices.
 
 Conceptually:
@@ -140,6 +150,8 @@ This means multiple devices belonging to the same user are processed individuall
 ---
 
 # Important requirement
+
+🇪🇸 [Versión en español](multi-device.es.md)
 
 For multiple devices to belong to the same logical identity:
 
@@ -165,6 +177,8 @@ In that case, NookMesh treats them as different users.
 
 # User must exist in NookMesh
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 If a device publishes using a user not defined in:
 
 ```text
@@ -188,6 +202,8 @@ This prevents accidental exposure of unknown users.
 ---
 
 # Device merging
+
+🇪🇸 [Versión en español](multi-device.es.md)
 
 NookMesh can consolidate nearby devices belonging to the same user.
 
@@ -281,6 +297,8 @@ then ipad is kept.
 
 # If merging is disabled
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 With:
 
 ```env
@@ -303,6 +321,8 @@ sergio/tracker
 
 # Visual representation
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 The API generates visual output from each final feature.
 
 Each visible location produces:
@@ -323,6 +343,8 @@ This is why a single visible user may internally become multiple rendered GeoJSO
 ---
 
 # Use cases
+
+🇪🇸 [Versión en español](multi-device.es.md)
 
 ## Device replacement
 
@@ -382,6 +404,8 @@ Allows behavior validation without creating new users.
 
 # Best practices
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 ## Keep identity stable
 
 Better:
@@ -439,6 +463,8 @@ useful for debugging or explicit multi-device tracking.
 
 # Security
 
+🇪🇸 [Versión en español](multi-device.es.md)
+
 MQTT authentication applies to the logical user.
 
 There is no independent authentication per device.
@@ -457,6 +483,8 @@ share:
 ---
 
 # Future
+
+🇪🇸 [Versión en español](multi-device.es.md)
 
 This design makes future integrations with multiple physical sources easier.
 

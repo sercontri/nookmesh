@@ -1,5 +1,7 @@
 # Requirements
 
+🇪🇸 [Versión en español](requirements.es.md)
+
 Before deploying NookMesh, make sure you have a compatible environment and the required components.
 
 ---

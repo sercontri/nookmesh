@@ -1,5 +1,7 @@
 # Instalación
 
+🇬🇧 [English version](installation.md)
+
 Este documento describe el proceso base de instalación de NookMesh sobre un entorno Linux o NAS compatible con Docker.
 
 La configuración avanzada de usuarios, visibilidad, seguridad e integraciones se documenta en secciones específicas.

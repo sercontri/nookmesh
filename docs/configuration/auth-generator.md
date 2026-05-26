@@ -1,5 +1,7 @@
 # Authentication and Runtime Generator
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 NookMesh uses an automated generator to build credentials, MQTT permissions, and internal runtime state from the declarative user configuration.
 
 Main script:
@@ -60,6 +62,8 @@ From that definition, NookMesh automatically generates the actual operational st
 ---
 
 # Generated files
+
+🇪🇸 [Versión en español](auth-generator.es.md)
 
 ## MQTT password database
 
@@ -201,6 +205,8 @@ This file is used internally by the API to resolve visualization permissions.
 
 # General flow
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 ```text
 config/users.json
         ↓
@@ -219,6 +225,8 @@ runtime reload
 ---
 
 # MQTT generation
+
+🇪🇸 [Versión en español](auth-generator.es.md)
 
 ## Passwords
 
@@ -316,6 +324,8 @@ Characteristics:
 
 # API token generation
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 ## First creation
 
 If the user does not exist in:
@@ -412,6 +422,8 @@ No orphaned credentials remain.
 
 # Visibility runtime
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 The script generates:
 
 ```text
@@ -434,6 +446,8 @@ This decouples declarative configuration from operational runtime.
 ---
 
 # Execution modes
+
+🇪🇸 [Versión en español](auth-generator.es.md)
 
 ## MQTT already running
 
@@ -489,6 +503,8 @@ Especially useful during initial installation.
 
 # Automatic restart
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 After deploying generated files, the script detects active services and automatically restarts those currently running.
 
 Supported services:
@@ -506,6 +522,8 @@ This ensures changes are applied immediately.
 
 # Dependencies
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 Required:
 
 ```text
@@ -521,6 +539,8 @@ the script aborts.
 ---
 
 # When to run it
+
+🇪🇸 [Versión en español](auth-generator.es.md)
 
 Run:
 
@@ -574,6 +594,8 @@ regen_token
 
 # Files you should NOT edit manually
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 Do not edit:
 
 ```text
@@ -595,6 +617,8 @@ config/users.json
 
 # Security
 
+🇪🇸 [Versión en español](auth-generator.es.md)
+
 Best practices:
 
 - do not version sensitive generated files
@@ -606,6 +630,8 @@ Best practices:
 ---
 
 # Troubleshooting
+
+🇪🇸 [Versión en español](auth-generator.es.md)
 
 ## I changed users.json and nothing happens
 

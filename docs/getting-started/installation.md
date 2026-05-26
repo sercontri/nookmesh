@@ -1,5 +1,7 @@
 # Installation
 
+🇪🇸 [Versión en español](installation.es.md)
+
 This document describes the base installation process for NookMesh on a Linux environment or Docker-compatible NAS.
 
 Advanced configuration for users, visibility, security, and integrations is documented in dedicated sections.

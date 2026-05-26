@@ -1,5 +1,7 @@
 # Persistence and Storage
 
+🇪🇸 [Versión en español](persistence.es.md)
+
 NookMesh separates code, configuration, and persistent operational data to maintain a modular, maintainable architecture suitable for real-world deployments.
 
 ---

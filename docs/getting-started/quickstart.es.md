@@ -1,5 +1,7 @@
 # Inicio rápido
 
+🇬🇧 [English version](quickstart.md)
+
 Esta guía muestra el camino más rápido para validar una instalación funcional de NookMesh extremo a extremo.
 
 Objetivo: comprobar que una ubicación enviada desde OwnTracks aparece correctamente en Guru Maps usando tu propia infraestructura.

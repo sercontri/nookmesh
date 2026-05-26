@@ -1,5 +1,7 @@
 # Authentication
 
+🇪🇸 [Versión en español](authentication.es.md)
+
 NookMesh protects access to location data through per-user authentication and backend validation.
 
 The goal is to prevent accidental exposure or unauthorized access to sensitive location information.

@@ -1,5 +1,7 @@
 # Generador de autenticación y runtime
 
+🇬🇧 [English version](auth-generator.md)
+
 NookMesh utiliza un generador automático para construir credenciales, permisos MQTT y estado operativo interno a partir de la configuración declarativa de usuarios.
 
 Script principal:
@@ -60,6 +62,8 @@ A partir de esa definición, NookMesh genera automáticamente el estado operativ
 ---
 
 # Archivos generados
+
+🇬🇧 [English version](auth-generator.md)
 
 ## MQTT password database
 
@@ -201,6 +205,8 @@ Este archivo se utiliza internamente por la API para resolver permisos de visual
 
 # Flujo general
 
+🇬🇧 [English version](auth-generator.md)
+
 ```text
 config/users.json
         ↓
@@ -219,6 +225,8 @@ runtime reload
 ---
 
 # Generación MQTT
+
+🇬🇧 [English version](auth-generator.md)
 
 ## Contraseñas
 
@@ -316,6 +324,8 @@ Características:
 
 # Generación de tokens API
 
+🇬🇧 [English version](auth-generator.md)
+
 ## Primera creación
 
 Si el usuario no existe en:
@@ -412,6 +422,8 @@ No quedan credenciales huérfanas.
 
 # Runtime de visibilidad
 
+🇬🇧 [English version](auth-generator.md)
+
 El script genera:
 
 ```text
@@ -434,6 +446,8 @@ Esto desacopla configuración declarativa del runtime operativo.
 ---
 
 # Modos de ejecución
+
+🇬🇧 [English version](auth-generator.md)
 
 ## MQTT ya arrancado
 
@@ -489,6 +503,8 @@ Muy útil durante instalación inicial.
 
 # Reinicio automático
 
+🇬🇧 [English version](auth-generator.md)
+
 Tras desplegar archivos generados, el script detecta servicios activos y reinicia automáticamente los que estén en ejecución.
 
 Servicios compatibles:
@@ -506,6 +522,8 @@ Esto garantiza aplicación inmediata de cambios.
 
 # Dependencias
 
+🇬🇧 [English version](auth-generator.md)
+
 Requeridas:
 
 ```text
@@ -521,6 +539,8 @@ el script aborta.
 ---
 
 # Cuándo ejecutarlo
+
+🇬🇧 [English version](auth-generator.md)
 
 Ejecuta:
 
@@ -574,6 +594,8 @@ regen_token
 
 # Archivos que NO debes editar manualmente
 
+🇬🇧 [English version](auth-generator.md)
+
 No editar:
 
 ```text
@@ -595,6 +617,8 @@ config/users.json
 
 # Seguridad
 
+🇬🇧 [English version](auth-generator.md)
+
 Buenas prácticas:
 
 - no versionar archivos generados sensibles
@@ -606,6 +630,8 @@ Buenas prácticas:
 ---
 
 # Troubleshooting
+
+🇬🇧 [English version](auth-generator.md)
 
 ## Cambié users.json y no ocurre nada
 

@@ -1,5 +1,7 @@
 # Quick Start
 
+🇪🇸 [Versión en español](quickstart.es.md)
+
 This guide shows the fastest path to validate a functional end-to-end NookMesh installation.
 
 Goal: verify that a location sent from OwnTracks appears correctly in Guru Maps using your own infrastructure.

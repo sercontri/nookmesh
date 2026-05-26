@@ -1,5 +1,7 @@
 # Problemas comunes
 
+🇬🇧 [English version](common-issues.md)
+
 Esta guía recopila incidencias habituales y cómo diagnosticarlas.
 
 Dado que NookMesh utiliza una arquitectura modular, los fallos suelen localizarse en una capa concreta del flujo.
@@ -25,6 +27,8 @@ La forma más eficaz de diagnosticar problemas es identificar en qué punto se r
 ---
 
 # No veo ubicaciones en Guru Maps
+
+🇬🇧 [English version](common-issues.md)
 
 Síntoma:
 
@@ -76,6 +80,8 @@ el problema está en backend, autenticación o conectividad.
 
 # OwnTracks conecta pero no aparecen datos
 
+🇬🇧 [English version](common-issues.md)
+
 Síntoma:
 
 ```text
@@ -102,6 +108,8 @@ Revisar:
 ---
 
 # OwnTracks no conecta al broker MQTT
+
+🇬🇧 [English version](common-issues.md)
 
 Síntomas:
 
@@ -130,6 +138,8 @@ docker logs nookmesh-mqtt
 
 # Auth failed en MQTT
 
+🇬🇧 [English version](common-issues.md)
+
 Causas típicas:
 
 - contraseña incorrecta
@@ -156,6 +166,8 @@ Si has cambiado usuarios:
 
 # Recorder no recibe mensajes
 
+🇬🇧 [English version](common-issues.md)
+
 Síntoma:
 
 MQTT funciona pero recorder no procesa.
@@ -176,6 +188,8 @@ docker logs nookmesh-recorder
 ---
 
 # Worker no genera GeoJSON
+
+🇬🇧 [English version](common-issues.md)
 
 Síntoma:
 
@@ -203,6 +217,8 @@ data/owntracks/store/last/
 ---
 
 # API devuelve acceso denegado
+
+🇬🇧 [English version](common-issues.md)
 
 Síntoma:
 
@@ -235,6 +251,8 @@ Si has cambiado usuarios:
 ---
 
 # GeoJSON vacío
+
+🇬🇧 [English version](common-issues.md)
 
 Síntoma:
 
@@ -271,6 +289,8 @@ EXCLUDE_VIEWER_IN_OUTPUT
 
 # Un usuario no ve a otro
 
+🇬🇧 [English version](common-issues.md)
+
 Síntoma:
 
 usuario autenticado correctamente
@@ -302,6 +322,8 @@ pertenece al grupo pero no será visible a través de ese contexto.
 
 # Datos desactualizados
 
+🇬🇧 [English version](common-issues.md)
+
 Síntoma:
 
 ubicaciones antiguas o congeladas.
@@ -325,6 +347,8 @@ Revisar:
 
 # Guru Maps no refresca
 
+🇬🇧 [English version](common-issues.md)
+
 Síntoma:
 
 datos válidos pero visualización congelada.
@@ -344,6 +368,8 @@ Revisar:
 ---
 
 # TLS no funciona
+
+🇬🇧 [English version](common-issues.md)
 
 Síntomas:
 
@@ -371,6 +397,8 @@ reverse proxy
 ---
 
 # Docker containers caídos
+
+🇬🇧 [English version](common-issues.md)
 
 Comprobar:
 
@@ -400,6 +428,8 @@ docker logs nookmesh-api
 
 # Problemas de DNS
 
+🇬🇧 [English version](common-issues.md)
+
 Síntomas:
 
 - no conecta MQTT
@@ -423,6 +453,8 @@ dig geojson.tudominio.com
 
 # generate.sh no refleja cambios
 
+🇬🇧 [English version](common-issues.md)
+
 Síntoma:
 
 se modifica `users.json` pero el sistema sigue usando configuración antigua.
@@ -445,6 +477,8 @@ También reinicia automáticamente servicios compatibles si están activos.
 ---
 
 # Método de diagnóstico recomendado
+
+🇬🇧 [English version](common-issues.md)
 
 Orden:
 
@@ -485,6 +519,8 @@ Orden:
 ---
 
 # Si todo falla
+
+🇬🇧 [English version](common-issues.md)
 
 Recorre el pipeline completo:
 

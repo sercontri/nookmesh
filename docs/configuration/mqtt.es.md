@@ -1,5 +1,7 @@
 # MQTT
 
+🇬🇧 [English version](mqtt.md)
+
 NookMesh utiliza MQTT como backbone de mensajería para transporte de ubicaciones en tiempo real.
 
 La implementación actual está basada en:
@@ -13,6 +15,8 @@ MQTT permite desacoplar publicación, transporte y persistencia de ubicaciones.
 ---
 
 # Rol de MQTT en NookMesh
+
+🇬🇧 [English version](mqtt.md)
 
 Flujo principal:
 
@@ -46,6 +50,8 @@ No participa directamente en:
 
 # Broker actual
 
+🇬🇧 [English version](mqtt.md)
+
 NookMesh utiliza:
 
 ```text
@@ -69,6 +75,8 @@ Esto permite:
 
 # Topics utilizados
 
+🇬🇧 [English version](mqtt.md)
+
 OwnTracks publica usando la estructura estándar:
 
 ```text
@@ -91,6 +99,8 @@ Estructura:
 ---
 
 # Usuarios MQTT
+
+🇬🇧 [English version](mqtt.md)
 
 Cada usuario dispone de credenciales MQTT independientes definidas en:
 
@@ -130,6 +140,8 @@ Ventajas:
 ---
 
 # Usuario interno recorder
+
+🇬🇧 [English version](mqtt.md)
 
 NookMesh utiliza una cuenta técnica interna obligatoria:
 
@@ -173,6 +185,8 @@ No representa un usuario humano.
 ---
 
 # ACL MQTT
+
+🇬🇧 [English version](mqtt.md)
 
 NookMesh genera automáticamente:
 
@@ -258,6 +272,8 @@ Uso exclusivo interno.
 
 # Cómo funciona la autenticación
 
+🇬🇧 [English version](mqtt.md)
+
 Proceso simplificado:
 
 ### 1. OwnTracks conecta
@@ -309,6 +325,8 @@ OwnTracks → Recorder
 
 # Cambio de credenciales MQTT
 
+🇬🇧 [English version](mqtt.md)
+
 Para cambiar credenciales:
 
 ### 1. Editar
@@ -345,6 +363,8 @@ y reiniciará servicios activos compatibles.
 ---
 
 # Seguridad recomendada
+
+🇬🇧 [English version](mqtt.md)
 
 ## Autenticación obligatoria
 
@@ -397,6 +417,8 @@ cuando sea realmente necesario.
 ---
 
 # Troubleshooting
+
+🇬🇧 [English version](mqtt.md)
 
 ## OwnTracks no conecta
 
@@ -456,6 +478,8 @@ API
 
 # Buenas prácticas
 
+🇬🇧 [English version](mqtt.md)
+
 ## Una credencial por usuario
 
 No compartir cuentas MQTT entre personas distintas.
@@ -481,6 +505,8 @@ Especialmente si el broker es accesible desde Internet.
 ---
 
 # Relación con otros componentes
+
+🇬🇧 [English version](mqtt.md)
 
 MQTT conecta:
 

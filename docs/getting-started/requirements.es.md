@@ -1,5 +1,7 @@
 # Requisitos
 
+🇬🇧 [English version](requirements.md)
+
 Antes de desplegar NookMesh, asegúrate de disponer de un entorno compatible y de los componentes necesarios.
 
 ---

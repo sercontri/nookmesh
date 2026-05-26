@@ -1,5 +1,7 @@
 # OwnTracks Integration
 
+🇪🇸 [Versión en español](owntracks.es.md)
+
 Currently, NookMesh uses **OwnTracks** as the primary client for location capture and publishing.
 
 OwnTracks is a mature, privacy-oriented client particularly well suited for self-hosted MQTT-based architectures.
@@ -152,6 +154,8 @@ Benefits:
 ---
 
 # Basic configuration
+
+🇪🇸 [Versión en español](owntracks.es.md)
 
 ## 1. Install OwnTracks
 
@@ -320,6 +324,8 @@ may be displayed as the user's visual label.
 
 # Device ID vs Tracker ID
 
+🇪🇸 [Versión en español](owntracks.es.md)
+
 These are different concepts.
 
 ## Device ID
@@ -356,6 +362,8 @@ short visual identifier.
 
 # Multi-device
 
+🇪🇸 [Versión en español](owntracks.es.md)
+
 NookMesh allows multiple devices per user.
 
 Example:
@@ -390,6 +398,8 @@ MERGE_MAX_METROS=100
 
 # Publishing behavior
 
+🇪🇸 [Versión en español](owntracks.es.md)
+
 OwnTracks may optimize publishing depending on:
 
 - internal configuration
@@ -404,6 +414,8 @@ This directly affects the NookMesh experience.
 ---
 
 # Platform considerations
+
+🇪🇸 [Versión en español](owntracks.es.md)
 
 ## iOS
 
@@ -437,6 +449,8 @@ Especially on:
 ---
 
 # Troubleshooting
+
+🇪🇸 [Versión en español](owntracks.es.md)
 
 ## Cannot connect to broker
 
@@ -545,6 +559,8 @@ Check:
 
 # Philosophy
 
+🇪🇸 [Versión en español](owntracks.es.md)
+
 OwnTracks fits especially well with NookMesh because it shares similar principles:
 
 - privacy
@@ -557,6 +573,8 @@ OwnTracks fits especially well with NookMesh because it shares similar principle
 
 # Current limitation
 
+🇪🇸 [Versión en español](owntracks.es.md)
+
 NookMesh is currently primarily oriented around OwnTracks as its location source.
 
 However, the architecture allows future alternative sources.
@@ -564,6 +582,8 @@ However, the architecture allows future alternative sources.
 ---
 
 # Future
+
+🇪🇸 [Versión en español](owntracks.es.md)
 
 Possible future integrations:
 

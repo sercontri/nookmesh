@@ -1,5 +1,7 @@
 # TLS y seguridad de transporte
 
+🇬🇧 [English version](tls.md)
+
 NookMesh puede desplegarse de forma segura en entornos reales mediante cifrado de transporte y exposición controlada de servicios.
 
 Aunque es posible realizar pruebas en entornos controlados sin cifrado, para despliegues reales se recomienda proteger todas las comunicaciones sensibles mediante TLS.
@@ -7,6 +9,8 @@ Aunque es posible realizar pruebas en entornos controlados sin cifrado, para des
 ---
 
 # Objetivo
+
+🇬🇧 [English version](tls.md)
 
 TLS protege:
 
@@ -27,6 +31,8 @@ Esto reduce riesgos como:
 ---
 
 # Servicios que deberían protegerse
+
+🇬🇧 [English version](tls.md)
 
 En una instalación típica de NookMesh:
 
@@ -94,6 +100,8 @@ Cualquier futura interfaz web o servicio adicional también debería exponerse m
 
 # MQTT seguro
 
+🇬🇧 [English version](tls.md)
+
 Sin cifrado:
 
 ```text
@@ -122,6 +130,8 @@ Ventajas:
 ---
 
 # API segura
+
+🇬🇧 [English version](tls.md)
 
 Sin cifrado:
 
@@ -153,6 +163,8 @@ el token puede interceptarse fácilmente.
 
 # Importante sobre tokens en URL
 
+🇬🇧 [English version](tls.md)
+
 HTTPS protege el transporte.
 
 Pero no elimina otros riesgos operativos.
@@ -174,6 +186,8 @@ Buenas prácticas:
 ---
 
 # Certificados
+
+🇬🇧 [English version](tls.md)
 
 ## Let's Encrypt
 
@@ -237,6 +251,8 @@ En despliegues públicos suele ser preferible usar CA pública.
 
 # Topología recomendada
 
+🇬🇧 [English version](tls.md)
+
 Arquitectura típica:
 
 ```text
@@ -271,6 +287,8 @@ MapCSS endpoint
 
 # Puertos habituales
 
+🇬🇧 [English version](tls.md)
+
 ## MQTT sin TLS
 
 ```text
@@ -297,6 +315,8 @@ MapCSS endpoint
 
 # OwnTracks y TLS
 
+🇬🇧 [English version](tls.md)
+
 OwnTracks soporta MQTT seguro mediante TLS.
 
 Configuración típica:
@@ -320,6 +340,8 @@ puede requerir configuración manual adicional según plataforma.
 
 # Seguridad API
 
+🇬🇧 [English version](tls.md)
+
 Además de HTTPS:
 
 se recomienda:
@@ -333,6 +355,8 @@ se recomienda:
 ---
 
 # Entornos de laboratorio
+
+🇬🇧 [English version](tls.md)
 
 Puede aceptarse temporalmente:
 
@@ -350,6 +374,8 @@ No recomendado para uso real.
 ---
 
 # Buenas prácticas
+
+🇬🇧 [English version](tls.md)
 
 ## Nunca exponer servicios sensibles sin cifrado
 
@@ -391,6 +417,8 @@ No sustituye:
 ---
 
 # Riesgos de no usar TLS
+
+🇬🇧 [English version](tls.md)
 
 Sin cifrado pueden exponerse:
 

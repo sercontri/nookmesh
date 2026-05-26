@@ -1,5 +1,7 @@
 # GeoJSON Endpoints
 
+🇪🇸 [Versión en español](geojson-endpoints.es.md)
+
 NookMesh exposes location data through protected GeoJSON endpoints for consumption by compatible clients.
 
 The primary client currently documented is:
