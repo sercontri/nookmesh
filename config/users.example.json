@@ -5,13 +5,15 @@
   },
   "users": {
     "recorder": {
-      "enabled": true,
+      "system_user": true,
       "mqtt_admin": true,
-      "mqtt_password": "PASSWORD_RECORDER",
-      "system_user": true
+      "mqtt_password": "PASSWORD_RECORDER"
     },
     "sergio": {
-      "enabled": true,
+      "status": "active",
+      "created_at": "2026-01-01",
+      "expires_on": null,
+      "retain_credentials": true,
       "mqtt_admin": true,
       "mqtt_password": "PASSWORD_SERGIO",
       "regen_token": false,
@@ -20,7 +22,10 @@
       "rol": "staff"
     },
     "sandra": {
-      "enabled": true,
+      "status": "active",
+      "created_at": "2026-01-01",
+      "expires_on": null,
+      "retain_credentials": true,
       "mqtt_password": "PASSWORD_SANDRA",
       "regen_token": false,
       "grupos": ["amigos", "familia", "viaje1", "viaje2"],
@@ -28,7 +33,10 @@
       "rol": "staff"
     },
     "raul": {
-      "enabled": true,
+      "status": "active",
+      "created_at": "2026-01-01",
+      "expires_on": null,
+      "retain_credentials": true,
       "mqtt_password": "PASSWORD_RAUL",
       "regen_token": false,
       "grupos": ["amigos", "viaje1"],
