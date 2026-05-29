@@ -54,6 +54,43 @@ mkdir -p "$RUNTIME_DIR"
 echo "== Generating files from users.json =="
 
 # ------------------------------------------------------------
+# Automatic expiration processing
+# ------------------------------------------------------------
+echo "== Processing user expirations =="
+
+TODAY="$(date +%F)"
+
+jq --arg TODAY "$TODAY" '
+.users |= with_entries(
+
+  if (
+    (.value.system_user // false | not)
+    and (.value.status != "disabled")
+    and (.value.expires_on == null)
+  )
+
+  then
+    .value.status = "active"
+
+  elif (
+    (.value.system_user // false | not)
+    and (.value.status == "active")
+    and (.value.expires_on != null)
+    and (.value.expires_on < $TODAY)
+  )
+
+  then
+    .value.status = "expired"
+
+  else
+    .
+  end
+)
+' "$USERS_JSON" > "$TMP_DIR/users_expiration.json"
+
+mv "$TMP_DIR/users_expiration.json" "$USERS_JSON"
+
+# ------------------------------------------------------------
 # Temp files
 # ------------------------------------------------------------
 touch "$API_TOKENS"
@@ -104,15 +141,24 @@ cat <<EOF > "$API_TOKENS"
 
 EOF
 
+cat <<EOF > "$MQTT_PASS"
+# ------------------------------------------------------------
+# NookMesh MQTT passwords
+# Generated automatically from config/users.json
+# DO NOT EDIT MANUALLY
+# ------------------------------------------------------------
+
+EOF
+
 # ------------------------------------------------------------
 # visibility.json
-# Excludes system users
+# Only active non-system users
 # ------------------------------------------------------------
 jq '
 .users
 | to_entries
 | map(select(
-    .value.enabled == true
+    .value.status == "active"
     and (.value.system_user // false | not)
 ))
 | sort_by(.key)
@@ -144,19 +190,31 @@ jq '
 
 # ------------------------------------------------------------
 # Prepare user list
-# USER | MQTT_PASS | MQTT_ADMIN | SYSTEM_USER | REGEN_TOKEN
+# ORDER:
+# 1. SYSTEM USERS
+# 2. ACTIVE
+# 3. DISABLED
+# 4. EXPIRED
 # ------------------------------------------------------------
 jq -r '
 .users
 | to_entries
-| map(select(.value.enabled == true))
-| sort_by(.key)
+| sort_by(
+    if (.value.system_user // false) then 0
+    elif .value.status == "active" then 1
+    elif .value.status == "disabled" then 2
+    else 3
+    end,
+    .key
+)
 | map([
     .key,
     .value.mqtt_password,
+    (.value.status // "active"),
     (.value.mqtt_admin // false),
     (.value.system_user // false),
-    (.value.regen_token // false)
+    (.value.regen_token // false),
+    (.value.retain_credentials // true)
   ])
 | .[]
 | @tsv
@@ -174,13 +232,23 @@ if [ "$USE_RUNNING_MQTT" = true ]; then
     touch /tmp/mqtt-passwords.txt
     chmod 600 /tmp/mqtt-passwords.txt
 
-    while IFS=$(printf "\t") read -r USER MQTT_PASS MQTT_ADMIN SYSTEM_USER REGEN_TOKEN; do
+    while IFS=$(printf "\t") read -r USER MQTT_PASS STATUS MQTT_ADMIN SYSTEM_USER REGEN_TOKEN RETAIN_CREDENTIALS; do
+
+      if [ "$STATUS" = "expired" ] || [ "$STATUS" = "disabled" ]; then
+        if [ "$RETAIN_CREDENTIALS" != "true" ]; then
+          echo "Skipping MQTT credentials for user $USER"
+          continue
+        fi
+      fi
+
       echo "Adding password for user $USER"
+
       mosquitto_passwd -b /tmp/mqtt-passwords.txt "$USER" "$MQTT_PASS" >/dev/null 2>&1
+
     done < /tmp/users.tsv
   '
 
-  docker cp nookmesh-mqtt:/tmp/mqtt-passwords.txt "$MQTT_PASS" >/dev/null
+  docker cp nookmesh-mqtt:/tmp/mqtt-passwords.txt "$MQTT_PASS.raw" >/dev/null
 
 else
 
@@ -192,20 +260,106 @@ else
       touch /work/mqtt-passwords.txt
       chmod 600 /work/mqtt-passwords.txt
 
-      while IFS=$(printf "\t") read -r USER MQTT_PASS MQTT_ADMIN SYSTEM_USER REGEN_TOKEN; do
+      while IFS=$(printf "\t") read -r USER MQTT_PASS STATUS MQTT_ADMIN SYSTEM_USER REGEN_TOKEN RETAIN_CREDENTIALS; do
+
+        if [ "$STATUS" = "expired" ] || [ "$STATUS" = "disabled" ]; then
+          if [ "$RETAIN_CREDENTIALS" != "true" ]; then
+            echo "Skipping MQTT credentials for user $USER"
+            continue
+          fi
+        fi
+
         echo "Adding password for user $USER"
+
         mosquitto_passwd -b /work/mqtt-passwords.txt "$USER" "$MQTT_PASS" >/dev/null 2>&1
+
       done < /work/users.tsv
     '
+
+  cp "$TMP_DIR/mqtt-passwords.txt" "$MQTT_PASS.raw"
 
 fi
 
 # ------------------------------------------------------------
+# Rebuild MQTT passwords with visual sections
+# ------------------------------------------------------------
+LAST_SECTION=""
+
+while IFS=$'\t' read -r USER MQTT_PASS_VALUE STATUS MQTT_ADMIN SYSTEM_USER REGEN_TOKEN RETAIN_CREDENTIALS; do
+
+  if [ "$STATUS" = "expired" ] || [ "$STATUS" = "disabled" ]; then
+    if [ "$RETAIN_CREDENTIALS" != "true" ]; then
+      continue
+    fi
+  fi
+
+  if [ "$SYSTEM_USER" = "true" ]; then
+    SECTION="SYSTEM USERS"
+  elif [ "$STATUS" = "active" ]; then
+    SECTION="ACTIVE USERS"
+  elif [ "$STATUS" = "disabled" ]; then
+    SECTION="DISABLED USERS"
+  else
+    SECTION="EXPIRED USERS"
+  fi
+
+  if [ "$SECTION" != "$LAST_SECTION" ]; then
+    echo "" >> "$MQTT_PASS"
+    echo "# $SECTION" >> "$MQTT_PASS"
+    echo "" >> "$MQTT_PASS"
+    LAST_SECTION="$SECTION"
+  fi
+
+  grep "^$USER:" "$MQTT_PASS.raw" >> "$MQTT_PASS"
+
+done < "$USERS_TSV"
+
+# ------------------------------------------------------------
 # Generate API tokens + ACL
 # ------------------------------------------------------------
-while IFS=$'\t' read -r USER MQTT_PASS_VALUE MQTT_ADMIN SYSTEM_USER REGEN_TOKEN; do
+LAST_SECTION=""
 
+while IFS=$'\t' read -r USER MQTT_PASS_VALUE STATUS MQTT_ADMIN SYSTEM_USER REGEN_TOKEN RETAIN_CREDENTIALS; do
+
+  if [ "$SYSTEM_USER" = "true" ]; then
+    SECTION="SYSTEM USERS"
+  elif [ "$STATUS" = "active" ]; then
+    SECTION="ACTIVE USERS"
+  elif [ "$STATUS" = "disabled" ]; then
+    SECTION="DISABLED USERS"
+  else
+    SECTION="EXPIRED USERS"
+  fi
+
+  # ----------------------------------------------------------
+  # Section headers
+  # ----------------------------------------------------------
+  if [ "$SECTION" != "$LAST_SECTION" ]; then
+
+    echo "" >> "$MQTT_ACL"
+    echo "# $SECTION" >> "$MQTT_ACL"
+    echo "" >> "$MQTT_ACL"
+
+    if [ "$SECTION" != "SYSTEM USERS" ]; then
+      echo "" >> "$API_TOKENS"
+      echo "# $SECTION" >> "$API_TOKENS"
+      echo "" >> "$API_TOKENS"
+    fi
+
+    LAST_SECTION="$SECTION"
+  fi
+
+  # ----------------------------------------------------------
+  # API Tokens
+  # ----------------------------------------------------------
   if [ "$SYSTEM_USER" != "true" ]; then
+
+    if [ "$STATUS" = "expired" ] || [ "$STATUS" = "disabled" ]; then
+      if [ "$RETAIN_CREDENTIALS" != "true" ]; then
+        echo "Skipping API token for user $USER"
+        continue
+      fi
+    fi
 
     EXISTING_TOKEN="$(grep "^$USER:" "$TOKENS_DB" | cut -d: -f2- || true)"
 
@@ -217,18 +371,26 @@ while IFS=$'\t' read -r USER MQTT_PASS_VALUE MQTT_ADMIN SYSTEM_USER REGEN_TOKEN;
     fi
 
     echo "$USER:$API_TOKEN" >> "$API_TOKENS"
+
   fi
 
+  # ----------------------------------------------------------
+  # MQTT ACL
+  # ----------------------------------------------------------
   echo "user $USER" >> "$MQTT_ACL"
 
-  if [ "$MQTT_ADMIN" = "true" ]; then
-    echo "topic read owntracks/#" >> "$MQTT_ACL"
-  else
-    echo "topic read owntracks/$USER/#" >> "$MQTT_ACL"
-  fi
+  if [ "$STATUS" = "active" ] || [ "$SYSTEM_USER" = "true" ]; then
 
-  if [ "$SYSTEM_USER" != "true" ]; then
-    echo "topic write owntracks/$USER/#" >> "$MQTT_ACL"
+    if [ "$MQTT_ADMIN" = "true" ]; then
+      echo "topic read owntracks/#" >> "$MQTT_ACL"
+    else
+      echo "topic read owntracks/$USER/#" >> "$MQTT_ACL"
+    fi
+
+    if [ "$SYSTEM_USER" != "true" ]; then
+      echo "topic write owntracks/$USER/#" >> "$MQTT_ACL"
+    fi
+
   fi
 
   echo "" >> "$MQTT_ACL"
@@ -264,6 +426,7 @@ chmod 644 "$GENERATED_DIR/mqtt-acl.txt"
 chmod 600 "$GENERATED_DIR/api-tokens.txt"
 
 rm -f "$GENERATED_DIR/api-password.txt"
+rm -f "$MQTT_PASS.raw"
 
 echo "== Deployment completed =="
 
