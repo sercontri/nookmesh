@@ -1,0 +1,17 @@
+# ------------------------------------------------------------
+# NookMesh Subscriptions Service
+# Periodic subscription and expiration processing
+# ------------------------------------------------------------
+
+services:
+  nookmesh-subscriptions:
+
+    container_name: nookmesh-subscriptions
+
+    build:
+      context: .
+
+    restart: unless-stopped
+
+    volumes:
+      - ../:/nookmesh

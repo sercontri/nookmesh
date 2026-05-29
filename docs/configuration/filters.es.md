@@ -21,6 +21,7 @@ Los filtros permiten ajustar:
 - frecuencia de regeneración del GeoJSON
 - ventana horaria de exportación
 - zona horaria para timestamps legibles
+- gestión automática de suscripciones
 - antigüedad máxima aceptada de ubicaciones
 - exclusión de la propia posición del usuario autenticado
 - filtrado por proximidad
@@ -38,10 +39,15 @@ TIMEZONE=Europe/Madrid
 EXPORT_INTERVAL_SECONDS=3
 EXPORT_HOUR_START=6
 EXPORT_HOUR_END=1
+
+ENABLE_SUBSCRIPTIONS=true
+
 MAX_EDAD_MIN=60
 EXCLUDE_VIEWER_IN_OUTPUT=true
+
 EXCLUDE_NEARBY_METROS=80
 REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY=true
+
 MERGE_CLOSEST_DEVICES=true
 MERGE_MAX_METROS=100
 ```
@@ -50,11 +56,43 @@ MERGE_MAX_METROS=100
 
 ## Aplicar cambios
 
-Tras modificar este archivo es necesario reiniciar los servicios que consumen estas variables:
+Algunos parámetros se leen únicamente durante el arranque del contenedor correspondiente.
+
+Después de modificar:
+
+```text
+config/filtros.env
+```
+
+puede ser necesario reiniciar determinados servicios.
+
+### Reinicio requerido
+
+| Parámetro | Reinicio requerido |
+|------------|------------|
+| TIMEZONE | worker + api |
+| EXPORT_INTERVAL_SECONDS | worker |
+| EXPORT_HOUR_START | worker |
+| EXPORT_HOUR_END | worker |
+| MAX_EDAD_MIN | worker + api |
+| EXCLUDE_VIEWER_IN_OUTPUT | api |
+| EXCLUDE_NEARBY_METROS | api |
+| REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY | api |
+| MERGE_CLOSEST_DEVICES | api |
+| MERGE_MAX_METROS | api |
+| ENABLE_SUBSCRIPTIONS | subscriptions |
+
+Ejemplos:
 
 ```bash
 docker restart nookmesh-worker
 docker restart nookmesh-api
+```
+
+o:
+
+```bash
+docker restart nookmesh-subscriptions
 ```
 
 ---
@@ -197,6 +235,69 @@ Resultado:
 ```
 
 Esto permite desactivar completamente visualización fuera del horario definido.
+
+---
+
+## ENABLE_SUBSCRIPTIONS
+
+Activa o desactiva el procesamiento automático de suscripciones.
+
+Ejemplo:
+
+```env
+ENABLE_SUBSCRIPTIONS=true
+```
+
+---
+
+### true
+
+El contenedor:
+
+```text
+nookmesh-subscriptions
+```
+
+ejecutará periódicamente:
+
+```text
+auth/generate.sh
+```
+
+para:
+
+- aplicar expiraciones automáticas
+- actualizar estados de usuarios
+- mantener credenciales
+- regenerar runtime si procede
+
+---
+
+### false
+
+El contenedor permanecerá activo pero no realizará ningún procesamiento.
+
+No se aplicarán automáticamente:
+
+- expiraciones
+- cambios de estado
+- actualizaciones de credenciales
+
+Los cambios solo se reflejarán cuando se ejecute manualmente:
+
+```bash
+./auth/generate.sh
+```
+
+---
+
+### Importante
+
+Tras modificar este parámetro es necesario reiniciar:
+
+```bash
+docker restart nookmesh-subscriptions
+```
 
 ---
 
@@ -470,6 +571,22 @@ La API también aplica lógica adicional:
 
 ---
 
+## Subscription Service
+
+También afecta al servicio:
+
+```text
+nookmesh-subscriptions
+```
+
+responsable de:
+
+- procesar expiraciones automáticas
+- mantener el ciclo de vida de usuarios
+- ejecutar periódicamente el generador de autenticación
+
+---
+
 # Ejemplo práctico
 
 Supongamos:
@@ -569,11 +686,22 @@ EXPORT_INTERVAL_SECONDS
 
 ---
 
-## Cambié filtros y no ocurre nada
+## Las suscripciones no se actualizan
 
-Reiniciar:
+Verificar:
+
+```env
+ENABLE_SUBSCRIPTIONS=true
+```
+
+y reiniciar:
 
 ```bash
-docker restart nookmesh-worker
-docker restart nookmesh-api
+docker restart nookmesh-subscriptions
 ```
+
+---
+
+## Cambié filtros y no ocurre nada
+
+Reiniciar el contenedor correspondiente según el parámetro modificado.

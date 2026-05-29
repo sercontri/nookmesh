@@ -1,0 +1,6 @@
+# ------------------------------------------------------------
+# NookMesh Subscriptions Service
+# Daily maintenance tasks
+# ------------------------------------------------------------
+
+5 0 * * * /bin/bash /nookmesh/auth/generate.sh
