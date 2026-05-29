@@ -2,7 +2,7 @@
 
 🇬🇧 [English version](users.md)
 
-NookMesh permite gestionar múltiples usuarios con configuración individualizada de autenticación, visibilidad y comportamiento operativo.
+NookMesh permite gestionar múltiples usuarios con configuración individualizada de autenticación, visibilidad, suscripciones y comportamiento operativo.
 
 Toda la configuración principal de identidades se define en:
 
@@ -16,6 +16,8 @@ Este archivo actúa como fuente principal de configuración para:
 - generación de ACL
 - emisión de tokens API
 - modelo runtime de visibilidad
+- ciclo de vida de usuarios
+- gestión de suscripciones
 - cuentas internas del sistema
 
 ---
@@ -32,34 +34,32 @@ Ejemplo oficial:
   },
   "users": {
     "recorder": {
-      "enabled": true,
+      "system_user": true,
       "mqtt_admin": true,
-      "mqtt_password": "PASSWORD_RECORDER",
-      "system_user": true
+      "mqtt_password": "PASSWORD_RECORDER"
     },
     "sergio": {
-      "enabled": true,
+      "status": "active",
+      "created_at": "2026-01-01",
+      "expires_on": null,
+      "retain_credentials": true,
       "mqtt_admin": true,
       "mqtt_password": "PASSWORD_SERGIO",
       "regen_token": false,
-      "grupos": ["amigos", "familia", "viaje1", "viaje2", "trabajo"],
+      "grupos": ["amigos", "familia", "viaje1", "viaje2"],
       "oculto_para": [],
       "rol": "staff"
     },
     "sandra": {
-      "enabled": true,
+      "status": "active",
+      "created_at": "2026-01-01",
+      "expires_on": "2027-01-01",
+      "retain_credentials": true,
       "mqtt_password": "PASSWORD_SANDRA",
       "regen_token": false,
-      "grupos": ["amigos", "familia", "viaje1", "viaje2"],
-      "oculto_para": ["viaje1", "viaje2"],
+      "grupos": ["amigos", "familia"],
+      "oculto_para": ["viaje1"],
       "rol": "staff"
-    },
-    "raul": {
-      "enabled": true,
-      "mqtt_password": "PASSWORD_RAUL",
-      "regen_token": false,
-      "grupos": ["amigos", "viaje1"],
-      "oculto_para": []
     }
   }
 }
@@ -77,6 +77,8 @@ Cada usuario puede:
 - ocultarse selectivamente frente a determinados grupos
 - disponer de permisos MQTT ampliados si es necesario
 - operar desde múltiples dispositivos físicos
+- disponer de una fecha de expiración opcional
+- conservar o eliminar credenciales al expirar
 - incluir metadatos lógicos opcionales
 
 Esto permite construir modelos de visibilidad mucho más flexibles que un simple esquema de compartición global.
@@ -129,24 +131,179 @@ recorder
 
 ---
 
-# Campos de usuario
+# Ciclo de vida de usuarios
 
-## `enabled`
+NookMesh utiliza un modelo basado en estados.
 
-Activa o desactiva el usuario.
+## `active`
+
+Usuario operativo normal.
 
 Ejemplo:
 
 ```json
-"enabled": true
+"status": "active"
 ```
 
-Si un usuario está desactivado:
+El usuario:
 
-- no se generan credenciales MQTT
-- no recibe token API
-- no se incluye en el runtime de visibilidad
-- no participa en procesos automáticos asociados
+- puede autenticarse por MQTT
+- dispone de ACL activas
+- dispone de token API
+- aparece en el runtime de visibilidad
+
+---
+
+## `disabled`
+
+Usuario suspendido manualmente.
+
+Ejemplo:
+
+```json
+"status": "disabled"
+```
+
+El usuario:
+
+- no puede publicar posiciones
+- desaparece del runtime de visibilidad
+- conserva opcionalmente sus credenciales
+
+Se utiliza normalmente para:
+
+- suspensiones temporales
+- mantenimiento
+- incidencias operativas
+
+---
+
+## `expired`
+
+Usuario expirado automáticamente.
+
+Ejemplo:
+
+```json
+"status": "expired"
+```
+
+El usuario:
+
+- deja de participar en el sistema
+- desaparece del runtime de visibilidad
+- puede conservar o eliminar credenciales según configuración
+
+Normalmente este estado es gestionado automáticamente por el servicio de suscripciones.
+
+---
+
+# Campos de usuario
+
+## `status`
+
+Estado operativo del usuario.
+
+Ejemplo:
+
+```json
+"status": "active"
+```
+
+Valores soportados:
+
+```text
+active
+disabled
+expired
+```
+
+---
+
+## `created_at`
+
+Fecha de creación del usuario.
+
+Ejemplo:
+
+```json
+"created_at": "2026-01-01"
+```
+
+Actualmente se utiliza con fines:
+
+- informativos
+- administrativos
+- de auditoría
+
+No afecta al comportamiento operativo del sistema.
+
+---
+
+## `expires_on`
+
+Fecha de expiración del usuario.
+
+Ejemplo:
+
+```json
+"expires_on": "2027-01-01"
+```
+
+o
+
+```json
+"expires_on": null
+```
+
+Si contiene una fecha válida:
+
+- el servicio de suscripciones podrá expirar automáticamente el usuario
+
+Si contiene:
+
+```json
+null
+```
+
+el usuario no tiene fecha de expiración.
+
+---
+
+## `retain_credentials`
+
+Controla la conservación de credenciales tras la expiración.
+
+Ejemplo:
+
+```json
+"retain_credentials": true
+```
+
+Opciones:
+
+```json
+true
+false
+```
+
+### `true`
+
+Conserva:
+
+- contraseña MQTT
+- token API
+
+Esto permite reactivar posteriormente el usuario sin necesidad de redistribuir credenciales.
+
+### `false`
+
+Elimina:
+
+- credenciales MQTT
+- token API
+
+Al reactivar el usuario deberán generarse nuevas credenciales.
 
 ---
 
@@ -165,8 +322,6 @@ Esto permite acceso amplio al árbol MQTT:
 ```text
 owntracks/#
 ```
-
-Incluye capacidad de lectura y escritura sobre tópicos MQTT del sistema.
 
 Uso típico:
 
@@ -203,12 +358,6 @@ config/generated/mqtt-passwords.txt
 
 Cada usuario dispone de autenticación independiente.
 
-Esto permite:
-
-- aislamiento
-- revocación selectiva
-- control granular de acceso
-
 ---
 
 ## `regen_token`
@@ -224,18 +373,14 @@ Ejemplo:
 Comportamiento:
 
 - si el usuario no tiene token previo → se genera automáticamente
-- si `regen_token=true` → se fuerza rotación del token
+- si `regen_token=true` → se fuerza la rotación del token
 - si `regen_token=false` → se conserva el token existente
-- si se elimina un usuario → su token se elimina
-- si se crea un usuario nuevo → recibe token automáticamente
 
 Tras una regeneración forzada, el sistema restablece automáticamente:
 
 ```json
 "regen_token": false
 ```
-
-Esto permite rotación controlada de credenciales API sin afectar al resto de usuarios.
 
 ---
 
@@ -261,8 +406,6 @@ Ejemplos:
 - senderismo
 - evento-temporal
 
-Un usuario puede pertenecer simultáneamente a múltiples grupos.
-
 ---
 
 ## `oculto_para`
@@ -276,15 +419,6 @@ Ejemplo:
 ```
 
 Esto permite ocultar un usuario frente a determinados grupos aunque pertenezca a ellos.
-
-Ejemplo conceptual:
-
-- Sandra pertenece a `amigos`, `familia`, `viaje1`
-- pero se oculta para `viaje1`
-
-Resultado:
-
-la visibilidad efectiva dependerá del resto de grupos compartidos y de las reglas activas del modelo de visibilidad.
 
 La lógica detallada se documenta en:
 
@@ -336,8 +470,6 @@ Estas cuentas:
 - no participan en visibilidad entre usuarios
 - pueden operar con privilegios especiales
 
-Se utilizan para comunicación interna entre componentes.
-
 ---
 
 # Multi-dispositivo
@@ -375,6 +507,56 @@ El comportamiento detallado se documenta en:
 
 ---
 
+# Suscripciones y expiración
+
+NookMesh puede gestionar automáticamente la expiración de usuarios mediante el servicio:
+
+```text
+nookmesh-subscriptions
+```
+
+Este servicio:
+
+- revisa diariamente los usuarios configurados
+- compara la fecha actual con `expires_on`
+- cambia automáticamente usuarios activos a expirados cuando corresponde
+
+Ejemplo:
+
+```json
+{
+  "status": "active",
+  "expires_on": "2027-01-01"
+}
+```
+
+Tras superar la fecha indicada:
+
+```json
+{
+  "status": "expired"
+}
+```
+
+Si posteriormente se desea reactivar el usuario:
+
+```json
+{
+  "status": "active",
+  "expires_on": null
+}
+```
+
+La siguiente ejecución lo mantendrá nuevamente operativo.
+
+La documentación detallada se encuentra en:
+
+```text
+subscriptions/INDEX.md
+```
+
+---
+
 # Buenas prácticas
 
 ## Separar usuarios reales y cuentas internas
@@ -404,7 +586,17 @@ No concedas:
 
 sin necesidad real.
 
-Otorga acceso amplio al sistema MQTT.
+---
+
+## Utilizar fechas de expiración para accesos temporales
+
+Ideal para:
+
+- viajes
+- eventos
+- usuarios invitados
+- pruebas temporales
+- grupos estacionales
 
 ---
 
@@ -477,6 +669,7 @@ Este archivo influye directamente en:
 - ACL MQTT
 - tokens API
 - runtime de visibilidad
+- servicio de suscripciones
 - automatización interna
 
 ---

@@ -10,7 +10,7 @@ Main script:
 auth/generate.sh
 ```
 
-This script is a central part of the architecture.
+This script is a core component of the architecture.
 
 It allows:
 
@@ -24,6 +24,8 @@ to act as the single source of truth for:
 - MQTT permissions
 - API tokens
 - runtime visibility
+- user lifecycle management
+- subscription management
 - internal system accounts
 
 ---
@@ -35,19 +37,21 @@ The generator automates:
 - creation of the Mosquitto-compatible MQTT password database
 - automatic MQTT ACL generation
 - API token creation and maintenance
-- selective token regeneration
-- automatic removal of deleted user tokens
+- selective token rotation
+- automatic expiration processing
+- user lifecycle management
+- optional credential retention
 - visibility runtime generation
 - automatic deployment of generated files
 - automatic restart of active services
 
-This avoids manually editing sensitive files and reduces operational errors.
+This eliminates manual editing of sensitive files and reduces operational errors.
 
 ---
 
-## Source of truth
+## Source of Truth
 
-All declarative configuration starts from:
+All declarative configuration originates from:
 
 ```text
 config/users.json
@@ -57,13 +61,13 @@ The complete user model is documented in:
 
 - [Users](users.md)
 
-From that definition, NookMesh automatically generates the actual operational state.
+Based on that definition, NookMesh automatically generates the real operational state.
 
 ---
 
-# Generated files
+# Generated Files
 
-## MQTT password database
+## MQTT Password Database
 
 Generated at:
 
@@ -85,7 +89,18 @@ are transformed using:
 mosquitto_passwd
 ```
 
-They are not stored as plain text inside the generated file.
+Passwords are not stored in plain text inside the generated file.
+
+The file is also visually organized into categories:
+
+```text
+SYSTEM USERS
+ACTIVE USERS
+DISABLED USERS
+EXPIRED USERS
+```
+
+to simplify administration and auditing.
 
 ---
 
@@ -126,9 +141,18 @@ This grants:
 - global read access to the OwnTracks MQTT tree
 - write access only within the user's own namespace
 
+ACLs are also visually grouped by category:
+
+```text
+SYSTEM USERS
+ACTIVE USERS
+DISABLED USERS
+EXPIRED USERS
+```
+
 ---
 
-## API tokens
+## API Tokens
 
 Generated at:
 
@@ -149,7 +173,7 @@ sergio:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 sandra:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 ```
 
-Each enabled human user receives their own token.
+Each active human user receives its own token.
 
 Users marked as:
 
@@ -157,11 +181,19 @@ Users marked as:
 "system_user": true
 ```
 
-do not receive a token.
+do not receive API tokens.
+
+The file is also organized into operational groups:
+
+```text
+ACTIVE USERS
+DISABLED USERS
+EXPIRED USERS
+```
 
 ---
 
-## Runtime visibility
+## Runtime Visibility
 
 Generated at:
 
@@ -171,9 +203,9 @@ data/runtime/visibility.json
 
 Contains a processed representation of the visibility model.
 
-Only includes:
+It only includes:
 
-- enabled users
+- users with `status="active"`
 - users not marked as `system_user`
 
 Possible fields:
@@ -197,11 +229,11 @@ Example:
 }
 ```
 
-This file is used internally by the API to resolve visualization permissions.
+This file is used internally by the API to resolve visibility permissions.
 
 ---
 
-# General flow
+# Overall Flow
 
 ```text
 config/users.json
@@ -220,7 +252,40 @@ runtime reload
 
 ---
 
-# MQTT generation
+# Automatic Expiration Processing
+
+Before generating credentials and permissions, the script automatically evaluates configured expiration dates.
+
+Example:
+
+```json
+{
+  "status": "active",
+  "expires_on": "2027-01-01"
+}
+```
+
+If the current date exceeds:
+
+```text
+2027-01-01
+```
+
+the system automatically updates the user to:
+
+```json
+{
+  "status": "expired"
+}
+```
+
+during the next execution.
+
+This ensures expired users automatically stop participating in the system without manual intervention.
+
+---
+
+# MQTT Generation
 
 ## Passwords
 
@@ -251,9 +316,9 @@ config/generated/mqtt-passwords.txt
 
 ## Automatic ACLs
 
-Permissions are generated automatically based on user type.
+Permissions are automatically generated according to user type.
 
-### Standard user
+### Standard User
 
 Example:
 
@@ -263,11 +328,11 @@ topic read owntracks/sergio/#
 topic write owntracks/sergio/#
 ```
 
-Can only operate within their own MQTT namespace.
+Can only operate inside its own MQTT namespace.
 
 ---
 
-### User with elevated privileges
+### Elevated Privilege User
 
 If:
 
@@ -282,11 +347,11 @@ topic read owntracks/#
 topic write owntracks/<user>/#
 ```
 
-Allows global MQTT visibility while keeping write access restricted to the user's own namespace.
+Allows global MQTT activity inspection while keeping write access restricted to the user's own namespace.
 
 ---
 
-### Internal system user
+### Internal System User
 
 Example:
 
@@ -294,7 +359,7 @@ Example:
 "system_user": true
 ```
 
-Typical case:
+typical case:
 
 ```text
 recorder
@@ -310,15 +375,75 @@ topic read owntracks/#
 Characteristics:
 
 - no API token
-- excluded from visibility logic
+- excluded from visibility
 - no MQTT write permissions
-- internal component use only
+- used for internal component communication
 
 ---
 
-# API token generation
+# Credential Retention
 
-## First creation
+Users may retain or remove credentials when they become inactive.
+
+Field:
+
+```json
+"retain_credentials": true
+```
+
+---
+
+## Retention Enabled
+
+If:
+
+```json
+"retain_credentials": true
+```
+
+the user keeps:
+
+- MQTT password
+- API token
+
+even after transitioning to:
+
+```json
+"status": "expired"
+```
+
+or:
+
+```json
+"status": "disabled"
+```
+
+This allows later reactivation without redistributing credentials.
+
+---
+
+## Retention Disabled
+
+If:
+
+```json
+"retain_credentials": false
+```
+
+the system automatically removes:
+
+- MQTT credentials
+- API token
+
+when the user is no longer active.
+
+Reactivation will require new credentials.
+
+---
+
+# API Token Generation
+
+## Initial Creation
 
 If the user does not exist in:
 
@@ -342,17 +467,17 @@ Result:
 
 If the user already exists:
 
-their token is preserved.
+its token is preserved.
 
-This avoids breaking already configured clients.
+This avoids breaking already-configured clients.
 
 Example:
 
-Guru Maps will continue working after unrelated configuration changes.
+Guru Maps continues working after unrelated changes.
 
 ---
 
-## Selective regeneration
+## Selective Regeneration
 
 If:
 
@@ -376,11 +501,11 @@ After running:
 ./auth/generate.sh
 ```
 
-the user will receive a new token.
+the user receives a new token.
 
 ---
 
-## Automatic reset
+## Automatic Reset
 
 After regeneration:
 
@@ -398,21 +523,37 @@ This prevents accidental repeated rotations.
 
 ---
 
-## Deleted users
+## Deleted Users
 
-If a user disappears from:
+If a user is completely removed from:
 
 ```text
 config/users.json
 ```
 
-their token is automatically removed from the generated file.
-
-No orphaned credentials remain.
+its credentials are automatically removed from the system.
 
 ---
 
-# Visibility runtime
+## Expired Users
+
+If a user becomes:
+
+```json
+"status": "expired"
+```
+
+behavior depends on:
+
+```json
+"retain_credentials"
+```
+
+allowing credentials to be preserved or removed according to the selected policy.
+
+---
+
+# Visibility Runtime
 
 The script generates:
 
@@ -423,23 +564,23 @@ data/runtime/visibility.json
 from:
 
 - groups
-- exclusions
+- visibility exclusions
 - roles
 
 Only includes users that are:
 
-- enabled
+- active
 - not marked as `system_user`
 
 This decouples declarative configuration from operational runtime.
 
 ---
 
-# Execution modes
+# Execution Modes
 
-## MQTT already running
+## MQTT Already Running
 
-If the script detects:
+If it detects:
 
 ```text
 nookmesh-mqtt
@@ -450,7 +591,7 @@ it uses fast mode.
 Process:
 
 - copies temporary data into the container
-- runs `mosquitto_passwd` inside the container
+- executes `mosquitto_passwd` inside the container
 - retrieves the generated result
 
 Advantages:
@@ -461,7 +602,7 @@ Advantages:
 
 ---
 
-## Bootstrap helper
+## Bootstrap Helper
 
 If MQTT is not yet running:
 
@@ -477,19 +618,19 @@ using:
 eclipse-mosquitto:latest
 ```
 
-to run:
+to execute:
 
 ```text
 mosquitto_passwd
 ```
 
-This allows credential generation even before the first deployment.
+This allows credentials to be generated even before the first deployment.
 
 Especially useful during initial installation.
 
 ---
 
-# Automatic restart
+# Automatic Restart
 
 After deploying generated files, the script detects active services and automatically restarts those currently running.
 
@@ -502,7 +643,36 @@ nookmesh-worker
 nookmesh-api
 ```
 
-This ensures changes are applied immediately.
+This guarantees immediate application of changes.
+
+---
+
+# Subscription Integration
+
+The service:
+
+```text
+nookmesh-subscriptions
+```
+
+periodically executes:
+
+```bash
+./auth/generate.sh
+```
+
+to apply:
+
+- automatic expirations
+- manual reactivations
+- status changes
+- credential updates
+
+Service activation is controlled through:
+
+```env
+ENABLE_SUBSCRIPTIONS=true
+```
 
 ---
 
@@ -522,15 +692,15 @@ the script aborts.
 
 ---
 
-# When to run it
+# When to Run It
 
-Run:
+Execute:
 
 ```bash
 ./auth/generate.sh
 ```
 
-whenever you change:
+whenever you modify:
 
 ### Users
 
@@ -540,7 +710,17 @@ config/users.json
 
 ---
 
-### MQTT passwords
+### User Status
+
+```json
+status
+expires_on
+retain_credentials
+```
+
+---
+
+### MQTT Passwords
 
 ```json
 mqtt_password
@@ -548,7 +728,7 @@ mqtt_password
 
 ---
 
-### MQTT privileges
+### MQTT Privileges
 
 ```json
 mqtt_admin
@@ -556,7 +736,7 @@ mqtt_admin
 
 ---
 
-### Visibility model
+### Visibility Model
 
 ```json
 grupos
@@ -566,7 +746,7 @@ rol
 
 ---
 
-### Token rotation
+### Token Rotation
 
 ```json
 regen_token
@@ -574,7 +754,7 @@ regen_token
 
 ---
 
-# Files you should NOT edit manually
+# Files You Should NOT Edit Manually
 
 Do not edit:
 
@@ -585,7 +765,7 @@ config/generated/api-tokens.txt
 data/runtime/visibility.json
 ```
 
-They are regenerated automatically.
+These files are regenerated automatically.
 
 Always edit:
 
@@ -597,19 +777,19 @@ config/users.json
 
 # Security
 
-Best practices:
+Recommended practices:
 
 - do not version sensitive generated files
 - protect `users.json`
 - do not share API tokens
-- regenerate tokens if compromise is suspected
+- rotate tokens if compromise is suspected
 - use TLS in production
 
 ---
 
 # Troubleshooting
 
-## I changed users.json and nothing happens
+## I Changed users.json and Nothing Happens
 
 Run:
 
@@ -619,7 +799,7 @@ Run:
 
 ---
 
-## Token does not change
+## Token Does Not Change
 
 Verify:
 
@@ -629,19 +809,38 @@ Verify:
 
 ---
 
-## MQTT rejects authentication
+## MQTT Authentication Fails
 
 Check:
 
 - `mqtt_password`
-- successful `generate.sh` execution
+- successful execution of `generate.sh`
 - broker restart
 
 ---
 
-## Deleted user still works
+## Deleted User Still Works
 
 Run:
+
+```bash
+./auth/generate.sh
+```
+
+---
+
+## User Does Not Become Active Again
+
+Verify:
+
+```json
+{
+  "status": "active",
+  "expires_on": null
+}
+```
+
+and run:
 
 ```bash
 ./auth/generate.sh

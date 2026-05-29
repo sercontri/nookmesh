@@ -2,7 +2,7 @@
 
 🇪🇸 [Versión en español](filters.es.md)
 
-NookMesh allows adjustment of the operational behavior of the GeoJSON pipeline through parameters defined in:
+NookMesh allows operational behavior of the GeoJSON pipeline to be adjusted through parameters defined in:
 
 ```text
 config/filtros.env
@@ -10,56 +10,94 @@ config/filtros.env
 
 These parameters control how locations are processed, filtered, and presented before being delivered to clients.
 
-They are not part of the authentication model or user visibility model, but rather the internal processing and export behavior.
+They are not part of the authentication model or the user visibility model, but rather the internal behavior of processing and export operations.
 
 ---
 
 ## Purpose
 
-Filters allow you to control:
+Filters allow you to adjust:
 
 - GeoJSON regeneration frequency
 - export time window
 - timezone for human-readable timestamps
+- automatic subscription management
 - maximum accepted location age
 - exclusion of the authenticated user's own position
 - proximity filtering
 - multi-device behavior
-- visual map cleanup
+- map visual cleanup
 
 ---
 
-## Configuration file
+## Configuration File
 
-Real example (`config/filtros.example.env`):
+Example (`config/filtros.example.env`):
 
 ```env
 TIMEZONE=Europe/Madrid
 EXPORT_INTERVAL_SECONDS=3
 EXPORT_HOUR_START=6
 EXPORT_HOUR_END=1
+
+ENABLE_SUBSCRIPTIONS=true
+
 MAX_EDAD_MIN=60
 EXCLUDE_VIEWER_IN_OUTPUT=true
+
 EXCLUDE_NEARBY_METROS=80
 REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY=true
+
 MERGE_CLOSEST_DEVICES=true
 MERGE_MAX_METROS=100
 ```
 
 ---
 
-## Applying changes
+## Applying Changes
 
-After modifying this file, restart the services that consume these variables:
+Some parameters are only read during container startup.
+
+After modifying:
+
+```text
+config/filtros.env
+```
+
+it may be necessary to restart the corresponding services.
+
+### Required Restart
+
+| Parameter | Restart Required |
+|------------|------------|
+| TIMEZONE | worker + api |
+| EXPORT_INTERVAL_SECONDS | worker |
+| EXPORT_HOUR_START | worker |
+| EXPORT_HOUR_END | worker |
+| MAX_EDAD_MIN | worker + api |
+| EXCLUDE_VIEWER_IN_OUTPUT | api |
+| EXCLUDE_NEARBY_METROS | api |
+| REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY | api |
+| MERGE_CLOSEST_DEVICES | api |
+| MERGE_MAX_METROS | api |
+| ENABLE_SUBSCRIPTIONS | subscriptions |
+
+Examples:
 
 ```bash
 docker restart nookmesh-worker
 docker restart nookmesh-api
 ```
 
+or:
+
+```bash
+docker restart nookmesh-subscriptions
+```
+
 ---
 
-# Available parameters
+# Available Parameters
 
 ## TIMEZONE
 
@@ -78,7 +116,7 @@ this **does not affect internal age calculations**, which are always performed i
 It only affects:
 
 - descriptive text
-- time shown to the user
+- displayed local time
 
 ---
 
@@ -96,9 +134,9 @@ Example:
 EXPORT_INTERVAL_SECONDS=3
 ```
 
-Interpretation:
+Meaning:
 
-GeoJSON will be rebuilt approximately every:
+the GeoJSON will be rebuilt approximately every:
 
 ```text
 3 seconds
@@ -111,18 +149,18 @@ GeoJSON will be rebuilt approximately every:
 Lower values:
 
 - faster updates
-- higher CPU / disk usage
+- higher CPU and disk usage
 
 Higher values:
 
-- lower resource usage
-- reduced real-time responsiveness
+- lower resource consumption
+- less real-time responsiveness
 
 ---
 
 ## EXPORT_HOUR_START
 
-Automatic export start time.
+Start hour for automatic export.
 
 Example:
 
@@ -130,9 +168,9 @@ Example:
 EXPORT_HOUR_START=6
 ```
 
-Interpretation:
+Meaning:
 
-start exporting at:
+export begins at:
 
 ```text
 06:00
@@ -142,7 +180,7 @@ start exporting at:
 
 ## EXPORT_HOUR_END
 
-Automatic export stop time.
+End hour for automatic export.
 
 Example:
 
@@ -150,9 +188,9 @@ Example:
 EXPORT_HOUR_END=1
 ```
 
-Interpretation:
+Meaning:
 
-stop exporting at:
+export stops at:
 
 ```text
 01:00
@@ -160,7 +198,7 @@ stop exporting at:
 
 ---
 
-### Overnight windows
+### Overnight Windows
 
 NookMesh supports windows that cross midnight.
 
@@ -173,7 +211,7 @@ EXPORT_HOUR_END=6
 
 Result:
 
-export active between:
+export remains active between:
 
 ```text
 22:00 → 06:00
@@ -181,11 +219,11 @@ export active between:
 
 ---
 
-### Outside export window
+### Outside Export Window
 
 If the system is outside the configured time window:
 
-NookMesh deliberately clears the GeoJSON.
+NookMesh intentionally clears the GeoJSON output.
 
 Result:
 
@@ -196,13 +234,76 @@ Result:
 }
 ```
 
-This allows visualization to be completely disabled outside the defined schedule.
+This allows map visibility to be completely disabled outside the defined schedule.
+
+---
+
+## ENABLE_SUBSCRIPTIONS
+
+Enables or disables automatic subscription processing.
+
+Example:
+
+```env
+ENABLE_SUBSCRIPTIONS=true
+```
+
+---
+
+### true
+
+The container:
+
+```text
+nookmesh-subscriptions
+```
+
+will periodically execute:
+
+```text
+auth/generate.sh
+```
+
+to:
+
+- apply automatic expirations
+- update user statuses
+- maintain credentials
+- regenerate runtime data when required
+
+---
+
+### false
+
+The container remains running but performs no processing.
+
+The following will not be applied automatically:
+
+- expirations
+- status changes
+- credential updates
+
+Changes will only take effect when manually executing:
+
+```bash
+./auth/generate.sh
+```
+
+---
+
+### Important
+
+After modifying this parameter you must restart:
+
+```bash
+docker restart nookmesh-subscriptions
+```
 
 ---
 
 ## MAX_EDAD_MIN
 
-Defines the maximum accepted age for a location to be considered valid.
+Defines the maximum accepted age for a valid location.
 
 Example:
 
@@ -210,7 +311,7 @@ Example:
 MAX_EDAD_MIN=60
 ```
 
-Interpretation:
+Meaning:
 
 only locations with age:
 
@@ -222,7 +323,7 @@ are accepted.
 
 ---
 
-### Current visual states
+### Current Visual States
 
 Current logic uses:
 
@@ -240,10 +341,10 @@ Current logic uses:
 This value affects:
 
 - GeoJSON export
-- API delivery
+- delivery API
 - viewer proximity logic
 
-It is not just a visual filter.
+It is not merely a visual filter.
 
 ---
 
@@ -263,13 +364,13 @@ EXCLUDE_VIEWER_IN_OUTPUT=true
 
 The user's own position is excluded.
 
-Very useful when the client already shows the local device position.
+Very useful when the client already displays the local position.
 
 Typical case:
 
 Guru Maps.
 
-Avoids duplicating your own location on screen.
+Prevents duplicate display of your own location.
 
 ---
 
@@ -281,7 +382,7 @@ The user will also see their own position inside the filtered GeoJSON.
 
 ## EXCLUDE_NEARBY_METROS
 
-Hides users that are too close to the authenticated viewer.
+Hides users located too close to the authenticated viewer.
 
 Example:
 
@@ -289,7 +390,7 @@ Example:
 EXCLUDE_NEARBY_METROS=80
 ```
 
-Interpretation:
+Meaning:
 
 users within:
 
@@ -303,13 +404,13 @@ may be excluded from the result.
 
 ### Purpose
 
-Reduce visual clutter.
+Reduces visual clutter.
 
 Typical scenarios:
 
 - group rides
 - stops
-- meetups
+- meetings
 - convoys
 
 ---
@@ -337,22 +438,22 @@ age > MAX_EDAD_MIN
 NookMesh returns:
 
 ```text
-a completely empty result
+completely empty result
 ```
 
 It does not merely disable proximity filtering.
 
-No users will be shown.
+No users will be displayed.
 
-This prevents spatial logic from being applied using stale reference data.
+This prevents spatial logic from using outdated reference positions.
 
 ---
 
 ### false
 
-The system will attempt proximity filtering even with older viewer positions.
+The system will attempt proximity filtering even with older positions.
 
-Normally not recommended.
+Generally not recommended.
 
 ---
 
@@ -370,9 +471,9 @@ MERGE_CLOSEST_DEVICES=true
 
 ### true
 
-If multiple devices from the same user are close enough:
+If multiple devices belonging to the same user are sufficiently close:
 
-they may be visually merged.
+they may be merged visually.
 
 ---
 
@@ -392,7 +493,7 @@ owntracks/sergio/tracker
 
 ## MERGE_MAX_METROS
 
-Maximum distance for considering devices from the same user mergeable.
+Maximum distance for devices belonging to the same user to be considered mergeable.
 
 Example:
 
@@ -400,7 +501,7 @@ Example:
 MERGE_MAX_METROS=100
 ```
 
-Interpretation:
+Meaning:
 
 if multiple devices are within:
 
@@ -412,18 +513,18 @@ they may be consolidated.
 
 ---
 
-### Device selection
+### Device Selection
 
-If multiple devices are mergeable:
+When multiple devices can be merged:
 
 NookMesh prioritizes:
 
 1. most recent location
-2. if timestamps match, best GPS accuracy
+2. if timestamps are equal, best GPS accuracy
 
 ---
 
-# Relationship with other components
+# Relationship With Other Components
 
 ## Visibility
 
@@ -438,7 +539,7 @@ That belongs to:
 - authentication
 - tokens
 - groups
-- hidden rules
+- visibility exclusions
 
 ---
 
@@ -450,7 +551,7 @@ They directly affect:
 nookmesh-worker
 ```
 
-Responsible for generating:
+which is responsible for generating:
 
 ```text
 nookmesh.geojson
@@ -472,13 +573,29 @@ The API also applies additional logic:
 
 ---
 
-# Practical example
+## Subscription Service
 
-Suppose:
+They also affect:
 
-- authenticated viewer with a recent position
+```text
+nookmesh-subscriptions
+```
+
+which is responsible for:
+
+- automatic expiration processing
+- user lifecycle management
+- periodic execution of the authentication generator
+
+---
+
+# Practical Example
+
+Assume:
+
+- authenticated viewer with a recent location
 - two companions within 50 meters
-- multiple devices for the same user
+- multiple devices belonging to the same user
 
 With:
 
@@ -491,13 +608,13 @@ Result:
 
 - very close users may be hidden
 - redundant devices may be merged
-- the map becomes visually cleaner
+- the map remains visually cleaner
 
 ---
 
-# Best practices
+# Best Practices
 
-## Group rides
+## Group Trips
 
 Recommended configuration:
 
@@ -508,7 +625,7 @@ MERGE_CLOSEST_DEVICES=true
 
 ---
 
-## Detailed monitoring
+## Detailed Monitoring
 
 If you want to see absolutely everything:
 
@@ -519,7 +636,7 @@ MERGE_CLOSEST_DEVICES=false
 
 ---
 
-## Avoid extreme values
+## Avoid Extreme Values
 
 Overly aggressive filters may hide useful information.
 
@@ -527,7 +644,7 @@ Overly aggressive filters may hide useful information.
 
 # Troubleshooting
 
-## A user does not appear
+## A User Does Not Appear
 
 Check:
 
@@ -539,7 +656,7 @@ REQUIRE_RECENT_VIEWER_POSITION_FOR_PROXIMITY
 
 ---
 
-## Devices disappear
+## Devices Disappear
 
 Check:
 
@@ -550,7 +667,7 @@ MERGE_MAX_METROS
 
 ---
 
-## GeoJSON is empty at night
+## GeoJSON Is Empty At Night
 
 Check:
 
@@ -561,7 +678,7 @@ EXPORT_HOUR_END
 
 ---
 
-## The map does not update quickly
+## Map Updates Too Slowly
 
 Check:
 
@@ -571,11 +688,22 @@ EXPORT_INTERVAL_SECONDS
 
 ---
 
-## I changed filters and nothing happens
+## Subscriptions Are Not Updating
 
-Restart:
+Verify:
+
+```env
+ENABLE_SUBSCRIPTIONS=true
+```
+
+and restart:
 
 ```bash
-docker restart nookmesh-worker
-docker restart nookmesh-api
+docker restart nookmesh-subscriptions
 ```
+
+---
+
+## I Changed Filters And Nothing Happens
+
+Restart the corresponding container according to the modified parameter.

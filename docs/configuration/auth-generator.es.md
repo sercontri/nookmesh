@@ -24,6 +24,8 @@ sea la fuente única de verdad para:
 - permisos MQTT
 - tokens API
 - visibilidad runtime
+- ciclo de vida de usuarios
+- gestión de suscripciones
 - cuentas internas del sistema
 
 ---
@@ -36,7 +38,9 @@ El generador automatiza:
 - generación automática de ACL MQTT
 - creación y mantenimiento de tokens API
 - regeneración selectiva de tokens
-- eliminación automática de tokens de usuarios eliminados
+- procesamiento automático de expiraciones
+- mantenimiento del ciclo de vida de usuarios
+- conservación opcional de credenciales
 - generación del runtime de visibilidad
 - despliegue automático de archivos generados
 - reinicio automático de servicios activos
@@ -87,6 +91,17 @@ mosquitto_passwd
 
 No se almacenan en texto plano dentro del archivo generado.
 
+Además, el archivo se organiza visualmente por categorías:
+
+```text
+SYSTEM USERS
+ACTIVE USERS
+DISABLED USERS
+EXPIRED USERS
+```
+
+para facilitar tareas de administración y auditoría.
+
 ---
 
 ## MQTT ACL
@@ -126,6 +141,15 @@ Esto concede:
 - lectura global del árbol MQTT de OwnTracks
 - escritura únicamente dentro del namespace del propio usuario
 
+Las ACL también se agrupan visualmente por categorías:
+
+```text
+SYSTEM USERS
+ACTIVE USERS
+DISABLED USERS
+EXPIRED USERS
+```
+
 ---
 
 ## API tokens
@@ -149,7 +173,7 @@ sergio:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 sandra:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 ```
 
-Cada usuario humano habilitado recibe su propio token.
+Cada usuario humano activo recibe su propio token.
 
 Usuarios marcados como:
 
@@ -158,6 +182,14 @@ Usuarios marcados como:
 ```
 
 no reciben token.
+
+El archivo también se organiza visualmente por grupos operativos:
+
+```text
+ACTIVE USERS
+DISABLED USERS
+EXPIRED USERS
+```
 
 ---
 
@@ -173,7 +205,7 @@ Contiene una representación procesada del modelo de visibilidad.
 
 Solo incluye:
 
-- usuarios habilitados
+- usuarios con `status="active"`
 - usuarios no marcados como `system_user`
 
 Campos posibles:
@@ -217,6 +249,39 @@ deployment
         ↓
 runtime reload
 ```
+
+---
+
+# Procesamiento automático de expiraciones
+
+Antes de generar credenciales y permisos, el script evalúa automáticamente las fechas de expiración configuradas.
+
+Ejemplo:
+
+```json
+{
+  "status": "active",
+  "expires_on": "2027-01-01"
+}
+```
+
+Si la fecha actual supera:
+
+```text
+2027-01-01
+```
+
+el sistema actualizará automáticamente:
+
+```json
+{
+  "status": "expired"
+}
+```
+
+durante la siguiente ejecución.
+
+Esto garantiza que los usuarios caducados dejen de participar automáticamente en el sistema sin intervención manual.
 
 ---
 
@@ -316,6 +381,66 @@ Características:
 
 ---
 
+# Conservación de credenciales
+
+Los usuarios pueden conservar o eliminar sus credenciales cuando dejan de estar activos.
+
+Campo:
+
+```json
+"retain_credentials": true
+```
+
+---
+
+## Conservación habilitada
+
+Si:
+
+```json
+"retain_credentials": true
+```
+
+el usuario conservará:
+
+- contraseña MQTT
+- token API
+
+aunque pase a:
+
+```json
+"status": "expired"
+```
+
+o:
+
+```json
+"status": "disabled"
+```
+
+Esto permite reactivar posteriormente al usuario sin redistribuir credenciales.
+
+---
+
+## Conservación deshabilitada
+
+Si:
+
+```json
+"retain_credentials": false
+```
+
+el sistema eliminará automáticamente:
+
+- credenciales MQTT
+- token API
+
+cuando el usuario deje de estar activo.
+
+Al reactivarlo será necesario generar nuevas credenciales.
+
+---
+
 # Generación de tokens API
 
 ## Primera creación
@@ -400,15 +525,31 @@ Esto evita rotaciones accidentales repetidas.
 
 ## Usuarios eliminados
 
-Si un usuario desaparece de:
+Si un usuario desaparece completamente de:
 
 ```text
 config/users.json
 ```
 
-su token desaparece automáticamente del archivo generado.
+sus credenciales desaparecen automáticamente del sistema.
 
-No quedan credenciales huérfanas.
+---
+
+## Usuarios expirados
+
+Si el usuario expira:
+
+```json
+"status": "expired"
+```
+
+el comportamiento dependerá de:
+
+```json
+"retain_credentials"
+```
+
+permitiendo conservar o eliminar credenciales según la configuración elegida.
 
 ---
 
@@ -428,7 +569,7 @@ a partir de:
 
 Solo incluye usuarios:
 
-- habilitados
+- activos
 - no marcados como `system_user`
 
 Esto desacopla configuración declarativa del runtime operativo.
@@ -506,6 +647,35 @@ Esto garantiza aplicación inmediata de cambios.
 
 ---
 
+# Integración con suscripciones
+
+El servicio:
+
+```text
+nookmesh-subscriptions
+```
+
+ejecuta periódicamente:
+
+```bash
+./auth/generate.sh
+```
+
+para aplicar:
+
+- expiraciones automáticas
+- reactivaciones manuales
+- cambios de estado
+- actualización de credenciales
+
+La activación del servicio se controla mediante:
+
+```env
+ENABLE_SUBSCRIPTIONS=true
+```
+
+---
+
 # Dependencias
 
 Requeridas:
@@ -536,6 +706,16 @@ cuando cambies:
 
 ```text
 config/users.json
+```
+
+---
+
+### Estado del usuario
+
+```json
+status
+expires_on
+retain_credentials
 ```
 
 ---
@@ -642,6 +822,25 @@ Revisar:
 ## Usuario eliminado sigue funcionando
 
 Ejecuta:
+
+```bash
+./auth/generate.sh
+```
+
+---
+
+## Usuario no vuelve a activarse
+
+Verifica:
+
+```json
+{
+  "status": "active",
+  "expires_on": null
+}
+```
+
+y vuelve a ejecutar:
 
 ```bash
 ./auth/generate.sh

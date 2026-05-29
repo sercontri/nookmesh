@@ -6,11 +6,11 @@ Welcome to the NookMesh technical documentation.
 
 This documentation describes the current architecture, installation, configuration, integrations, and operational behavior of the project.
 
-If you're looking for a general overview, use cases, or introductory information, refer to the main project README.
+If you are looking for a high-level overview, use cases, or introductory information, please refer to the main repository README.
 
-## Scope of this documentation
+## Documentation Scope
 
-Here you'll find information about:
+Here you will find information about:
 
 - installation and deployment
 - internal architecture
@@ -35,13 +35,13 @@ What you need before deploying NookMesh:
 
 ## Installation
 
-Initial environment setup, configuration files, and base stack deployment:
+Initial environment preparation, configuration files, and base stack deployment:
 
 - [Installation](getting-started/installation.md)
 
 ## Quick Start
 
-Fast end-to-end validation of a working installation:
+Fast validation of a complete end-to-end working installation:
 
 - [Quick Start](getting-started/quickstart.md)
 
@@ -57,19 +57,19 @@ Conceptual system architecture:
 
 ## Components
 
-Detailed description of system services:
+Detailed description of services and responsibilities:
 
 - [Components](architecture/components.md)
 
 ## Data Flow
 
-Full path of a location update from device to map client:
+Complete journey of a location from device to visualization client:
 
 - [Data Flow](architecture/data-flow.md)
 
 ## Persistence
 
-Storage model and operational data layout:
+Storage model and operational data architecture:
 
 - [Persistence](architecture/persistence.md)
 
@@ -79,43 +79,49 @@ Storage model and operational data layout:
 
 ## Users
 
-Identities, permissions, and user configuration:
+Complete user model, permissions, states, expirations, and subscription configuration:
 
 - [Users](configuration/users.md)
 
 ## MQTT
 
-Broker, authentication, and transport:
+Broker, authentication, and transport configuration:
 
 - [MQTT](configuration/mqtt.md)
 
 ## Authentication Generator
 
-Generation of MQTT credentials, ACLs, API tokens, and runtime configuration:
+Generation and maintenance of MQTT credentials, ACLs, API tokens, user states, and runtime configuration:
 
 - [Authentication Generator](configuration/auth-generator.md)
 
+## Subscriptions
+
+Autonomous service for automatic expiration processing, renewals, and periodic user maintenance:
+
+- [Subscriptions](configuration/subscriptions.md)
+
 ## Operational Filters
 
-GeoJSON processing behavior:
+GeoJSON processing behavior and global runtime parameters:
 
 - [Filters](configuration/filters.md)
 
 ## Visibility
 
-Exposure and hiding rules between users:
+Rules controlling user visibility and exposure:
 
 - [Visibility](configuration/visibility.md)
 
-## Multi-device
+## Multi-Device
 
-Managing multiple devices associated with the same user:
+Management of multiple devices associated with the same user:
 
-- [Multi-device](configuration/multi-device.md)
+- [Multi-Device](configuration/multi-device.md)
 
 ## TLS and Transport Security
 
-Secure communications and production deployment protection:
+Secure communications and production deployment practices:
 
 - [TLS](configuration/tls.md)
 
@@ -137,7 +143,7 @@ Primary visualization client:
 
 ## MapCSS
 
-Visual customization for supported clients:
+Visual customization for compatible clients:
 
 - [MapCSS](integrations/mapcss.md)
 
@@ -147,13 +153,13 @@ Visual customization for supported clients:
 
 ## Authentication
 
-Protected endpoint access model:
+Access model for protected endpoints:
 
 - [Authentication](api/authentication.md)
 
 ## GeoJSON Endpoints
 
-GeoJSON-based location consumption:
+Location consumption through GeoJSON:
 
 - [GeoJSON Endpoints](api/geojson-endpoints.md)
 
@@ -163,7 +169,7 @@ GeoJSON-based location consumption:
 
 ## Hybrid Location Roadmap
 
-Future evolution toward multiple location sources and hybrid transport models:
+Future evolution towards multiple location sources and hybrid transport systems:
 
 - [Hybrid Location Roadmap](roadmap/hybrid-location-roadmap.md)
 
@@ -173,7 +179,7 @@ Future evolution toward multiple location sources and hybrid transport models:
 
 ## Common Issues
 
-Diagnosis and resolution of common problems:
+Diagnosis and resolution of common operational problems:
 
 - [Common Issues](troubleshooting/common-issues.md)
 
@@ -181,7 +187,7 @@ Diagnosis and resolution of common problems:
 
 # Recommended Path for New Users
 
-If this is your first NookMesh installation, this is the recommended reading path:
+If this is your first NookMesh installation, the recommended reading order is:
 
 1. [Overview](architecture/overview.md)
 2. [Requirements](getting-started/requirements.md)
@@ -190,7 +196,9 @@ If this is your first NookMesh installation, this is the recommended reading pat
 5. [Users](configuration/users.md)
 6. [MQTT](configuration/mqtt.md)
 7. [Authentication Generator](configuration/auth-generator.md)
-8. [Visibility](configuration/visibility.md)
-9. [OwnTracks](integrations/owntracks.md)
-10. [Guru Maps](integrations/gurumaps.md)
-11. [Common Issues](troubleshooting/common-issues.md)
+8. [Subscriptions](configuration/subscriptions.md)
+9. [Filters](configuration/filters.md)
+10. [Visibility](configuration/visibility.md)
+11. [OwnTracks](integrations/owntracks.md)
+12. [Guru Maps](integrations/gurumaps.md)
+13. [Common Issues](troubleshooting/common-issues.md)

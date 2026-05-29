@@ -2,20 +2,22 @@
 
 🇪🇸 [Versión en español](users.es.md)
 
-NookMesh allows management of multiple users with individualized authentication, visibility, and operational behavior settings.
+NookMesh supports multiple users with individualized authentication, visibility, subscription, and operational behavior settings.
 
-All primary identity configuration is defined in:
+All identity configuration is defined in:
 
 ```text
 config/users.json
 ```
 
-This file acts as the primary configuration source for:
+This file acts as the primary source of configuration for:
 
 - MQTT authentication
 - ACL generation
 - API token issuance
-- runtime visibility model
+- visibility runtime model
+- user lifecycle management
+- subscription management
 - internal system accounts
 
 ---
@@ -32,34 +34,32 @@ Official example:
   },
   "users": {
     "recorder": {
-      "enabled": true,
+      "system_user": true,
       "mqtt_admin": true,
-      "mqtt_password": "PASSWORD_RECORDER",
-      "system_user": true
+      "mqtt_password": "PASSWORD_RECORDER"
     },
     "sergio": {
-      "enabled": true,
+      "status": "active",
+      "created_at": "2026-01-01",
+      "expires_on": null,
+      "retain_credentials": true,
       "mqtt_admin": true,
       "mqtt_password": "PASSWORD_SERGIO",
       "regen_token": false,
-      "grupos": ["amigos", "familia", "viaje1", "viaje2", "trabajo"],
+      "grupos": ["friends", "family", "trip1", "trip2"],
       "oculto_para": [],
       "rol": "staff"
     },
     "sandra": {
-      "enabled": true,
+      "status": "active",
+      "created_at": "2026-01-01",
+      "expires_on": "2027-01-01",
+      "retain_credentials": true,
       "mqtt_password": "PASSWORD_SANDRA",
       "regen_token": false,
-      "grupos": ["amigos", "familia", "viaje1", "viaje2"],
-      "oculto_para": ["viaje1", "viaje2"],
+      "grupos": ["friends", "family"],
+      "oculto_para": ["trip1"],
       "rol": "staff"
-    },
-    "raul": {
-      "enabled": true,
-      "mqtt_password": "PASSWORD_RAUL",
-      "regen_token": false,
-      "grupos": ["amigos", "viaje1"],
-      "oculto_para": []
     }
   }
 }
@@ -75,11 +75,13 @@ Each user can:
 - receive their own API token
 - belong to multiple groups
 - selectively hide from specific groups
-- have elevated MQTT privileges if needed
+- receive extended MQTT permissions when required
 - operate from multiple physical devices
+- have an optional expiration date
+- retain or remove credentials after expiration
 - include optional logical metadata
 
-This allows building visibility models far more flexible than a simple global sharing scheme.
+This allows much more flexible visibility models than a simple global sharing scheme.
 
 ---
 
@@ -87,7 +89,7 @@ This allows building visibility models far more flexible than a simple global sh
 
 ## `_meta`
 
-Descriptive file metadata.
+Descriptive information about the file.
 
 Example:
 
@@ -98,7 +100,7 @@ Example:
 }
 ```
 
-Used only for informational and traceability purposes.
+Used solely for informational and traceability purposes.
 
 It does not affect system behavior.
 
@@ -106,7 +108,7 @@ It does not affect system behavior.
 
 ## `users`
 
-Primary container for configured identities.
+Main container of configured identities.
 
 Example:
 
@@ -129,30 +131,185 @@ recorder
 
 ---
 
-# User fields
+# User lifecycle
 
-## `enabled`
+NookMesh uses a state-based lifecycle model.
 
-Enables or disables the user.
+## `active`
+
+Normal operational user.
 
 Example:
 
 ```json
-"enabled": true
+"status": "active"
 ```
 
-If a user is disabled:
+The user:
 
-- MQTT credentials are not generated
-- no API token is issued
-- the user is excluded from visibility runtime
-- associated automated processes ignore the user
+- can authenticate via MQTT
+- has active ACL permissions
+- has an API token
+- appears in the visibility runtime
+
+---
+
+## `disabled`
+
+Manually suspended user.
+
+Example:
+
+```json
+"status": "disabled"
+```
+
+The user:
+
+- cannot publish locations
+- is removed from the visibility runtime
+- may optionally retain credentials
+
+Typically used for:
+
+- temporary suspensions
+- maintenance
+- operational incidents
+
+---
+
+## `expired`
+
+Automatically expired user.
+
+Example:
+
+```json
+"status": "expired"
+```
+
+The user:
+
+- no longer participates in the system
+- is removed from the visibility runtime
+- may retain or remove credentials depending on configuration
+
+This state is typically managed automatically by the subscription service.
+
+---
+
+# User fields
+
+## `status`
+
+User operational state.
+
+Example:
+
+```json
+"status": "active"
+```
+
+Supported values:
+
+```text
+active
+disabled
+expired
+```
+
+---
+
+## `created_at`
+
+User creation date.
+
+Example:
+
+```json
+"created_at": "2026-01-01"
+```
+
+Currently used for:
+
+- informational purposes
+- administration
+- auditing
+
+It does not affect system behavior.
+
+---
+
+## `expires_on`
+
+User expiration date.
+
+Example:
+
+```json
+"expires_on": "2027-01-01"
+```
+
+or
+
+```json
+"expires_on": null
+```
+
+If a valid date is present:
+
+- the subscription service may automatically expire the user
+
+If set to:
+
+```json
+null
+```
+
+the user has no expiration date.
+
+---
+
+## `retain_credentials`
+
+Controls credential retention after expiration.
+
+Example:
+
+```json
+"retain_credentials": true
+```
+
+Supported values:
+
+```json
+true
+false
+```
+
+### `true`
+
+Retains:
+
+- MQTT password
+- API token
+
+This allows later reactivation without redistributing credentials.
+
+### `false`
+
+Removes:
+
+- MQTT credentials
+- API token
+
+If the user is reactivated, new credentials must be generated.
 
 ---
 
 ## `mqtt_admin`
 
-Grants elevated MQTT administrative privileges.
+Grants extended MQTT administrative privileges.
 
 Example:
 
@@ -160,13 +317,11 @@ Example:
 "mqtt_admin": true
 ```
 
-This allows broad access to the MQTT tree:
+This provides broad access to the MQTT tree:
 
 ```text
 owntracks/#
 ```
-
-Including read and write access to system MQTT topics.
 
 Typical use cases:
 
@@ -175,7 +330,7 @@ Typical use cases:
 - internal automation
 - technical services
 
-Not recommended for normal users unless genuinely necessary.
+Not recommended for normal users unless strictly necessary.
 
 ---
 
@@ -195,7 +350,7 @@ During:
 ./auth/generate.sh
 ```
 
-this password is transformed into broker-compatible operational credentials:
+this password is transformed into operational broker credentials:
 
 ```text
 config/generated/mqtt-passwords.txt
@@ -203,17 +358,11 @@ config/generated/mqtt-passwords.txt
 
 Each user has independent authentication.
 
-This allows:
-
-- isolation
-- selective revocation
-- granular access control
-
 ---
 
 ## `regen_token`
 
-Controls API token regeneration for the user.
+Controls API token regeneration.
 
 Example:
 
@@ -223,11 +372,9 @@ Example:
 
 Behavior:
 
-- if the user has no existing token → one is created automatically
+- if the user has no previous token → one is generated automatically
 - if `regen_token=true` → token rotation is forced
 - if `regen_token=false` → the existing token is preserved
-- if a user is removed → the token is deleted
-- if a new user is created → a token is automatically assigned
 
 After forced regeneration, the system automatically resets:
 
@@ -235,21 +382,19 @@ After forced regeneration, the system automatically resets:
 "regen_token": false
 ```
 
-This allows controlled API credential rotation without affecting other users.
-
 ---
 
 ## `grupos`
 
-Defines group membership.
+Defines user membership in one or more groups.
 
 Example:
 
 ```json
-"grupos": ["amigos", "familia", "viaje1"]
+"grupos": ["friends", "family", "trip1"]
 ```
 
-Groups represent visibility and sharing scopes.
+Groups represent visibility and sharing domains.
 
 Examples:
 
@@ -261,8 +406,6 @@ Examples:
 - hiking
 - temporary-event
 
-A user may belong to multiple groups simultaneously.
-
 ---
 
 ## `oculto_para`
@@ -272,19 +415,10 @@ Defines visibility exceptions.
 Example:
 
 ```json
-"oculto_para": ["viaje1"]
+"oculto_para": ["trip1"]
 ```
 
-This allows hiding a user from specific groups even if they belong to them.
-
-Conceptual example:
-
-- Sandra belongs to `amigos`, `familia`, `viaje1`
-- but hides from `viaje1`
-
-Result:
-
-effective visibility depends on remaining shared groups and the active visibility model rules.
+Allows a user to hide from specific groups even if they belong to them.
 
 Detailed logic is documented in:
 
@@ -304,12 +438,12 @@ Example:
 
 Possible uses:
 
-- visual differentiation on maps
+- map styling
 - additional rules
 - future automation
 - custom business logic
 
-Not required.
+Optional.
 
 ---
 
@@ -333,26 +467,24 @@ These accounts:
 
 - do not represent real people
 - do not receive API tokens
-- do not participate in user visibility
-- may operate with special privileges
-
-They are used for internal communication between components.
+- do not participate in visibility
+- may operate with elevated privileges
 
 ---
 
-# Multi-device
+# Multi-device support
 
-A single logical identity may operate from multiple physical devices.
+A single logical identity can operate from multiple physical devices.
 
 Example:
 
-User:
+user:
 
 ```text
 sergio
 ```
 
-Devices:
+devices:
 
 ```text
 iphone
@@ -361,13 +493,13 @@ xiaomi
 iphone2
 ```
 
-As long as each device uses a unique identifier in OwnTracks.
+As long as each device uses a unique OwnTracks device identifier.
 
-This allows reuse of:
+This allows sharing:
 
-- the same MQTT credentials
-- the same API token
-- the same logical identity
+- MQTT credentials
+- API token
+- logical identity
 
 Detailed behavior is documented in:
 
@@ -375,9 +507,59 @@ Detailed behavior is documented in:
 
 ---
 
+# Subscriptions and expiration
+
+NookMesh can automatically manage user expiration through:
+
+```text
+nookmesh-subscriptions
+```
+
+This service:
+
+- checks configured users daily
+- compares the current date with `expires_on`
+- automatically expires users when required
+
+Example:
+
+```json
+{
+  "status": "active",
+  "expires_on": "2027-01-01"
+}
+```
+
+After the specified date:
+
+```json
+{
+  "status": "expired"
+}
+```
+
+To reactivate a user:
+
+```json
+{
+  "status": "active",
+  "expires_on": null
+}
+```
+
+The next execution will keep the user operational again.
+
+Detailed documentation can be found in:
+
+```text
+subscriptions/INDEX.md
+```
+
+---
+
 # Best practices
 
-## Separate real users and internal accounts
+## Separate real users from internal accounts
 
 Keep separate:
 
@@ -402,17 +584,25 @@ Do not grant:
 "mqtt_admin": true
 ```
 
-without real necessity.
-
-It provides broad access to the MQTT system.
+unless genuinely required.
 
 ---
 
-## Keep names consistent
+## Use expiration dates for temporary access
 
-Use clear and stable identities.
+Ideal for:
 
-Better:
+- trips
+- events
+- guest users
+- temporary testing
+- seasonal groups
+
+---
+
+## Keep naming consistent
+
+Prefer:
 
 ```text
 sergio
@@ -420,7 +610,7 @@ sandra
 raul
 ```
 
-than:
+instead of:
 
 ```text
 test
@@ -432,7 +622,7 @@ abc
 
 ## Use meaningful groups
 
-Better:
+Prefer:
 
 ```text
 family
@@ -441,7 +631,7 @@ work
 alps-trip
 ```
 
-than:
+instead of:
 
 ```text
 group1
@@ -459,7 +649,7 @@ It should:
 
 - remain private
 - never be committed to the repository
-- always be generated from safe templates
+- always be generated from secure templates
 
 The public repository should only include:
 
@@ -471,21 +661,22 @@ users.example.json
 
 # Relationship with other components
 
-This file directly affects:
+This file directly influences:
 
 - MQTT authentication
 - MQTT ACLs
 - API tokens
 - visibility runtime
+- subscription service
 - internal automation
 
 ---
 
-# Next steps
+# Next step
 
 Continue with:
 
 - [Visibility](visibility.md)
 - [Multi-device](multi-device.md)
 - [MQTT](mqtt.md)
-- [Authentication generator](auth-generator.md)
+- [Authentication Generator](auth-generator.md)

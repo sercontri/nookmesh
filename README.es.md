@@ -11,7 +11,7 @@
 
 NookMesh es una plataforma open source de compartición de ubicación en tiempo real basada en **OwnTracks**, **MQTT**, **Docker** y una **API GeoJSON protegida**, diseñada para quienes quieren mantener el control completo sobre su infraestructura, autenticación y datos de localización.
 
-Nació inicialmente para viajes en moto entre amigos, pero su arquitectura modular permite adaptarlo a familias, grupos outdoor, equipos técnicos y futuras arquitecturas híbridas con múltiples fuentes de ubicación.
+Nació inicialmente para viajes en moto entre amigos, pero su arquitectura modular permite adaptarlo a familias, grupos outdoor, equipos técnicos, comunidades y futuras arquitecturas híbridas con múltiples fuentes de ubicación.
 
 > ⚠️ Proyecto en evolución activa. La arquitectura principal es funcional y utilizable, aunque algunas capacidades continúan refinándose.
 
@@ -27,6 +27,7 @@ Nació inicialmente para viajes en moto entre amigos, pero su arquitectura modul
 - Visualización directa en **Guru Maps**
 - Soporte multiusuario y multi-dispositivo
 - Control avanzado de visibilidad entre usuarios
+- Gestión automática de expiraciones y suscripciones
 - Arquitectura modular basada en Docker
 - Despliegue seguro mediante TLS (recomendado)
 - Base preparada para futuras integraciones híbridas
@@ -42,12 +43,13 @@ NookMesh utiliza actualmente:
 - Docker
 - GeoJSON
 - Guru Maps
+- Subscription Service
 
 ## Cómo funciona
 
 NookMesh recibe ubicaciones desde dispositivos móviles mediante **OwnTracks**, las procesa dentro de tu propia infraestructura y expone únicamente los datos autorizados a clientes compatibles.
 
-Toda la autenticación, filtrado de visibilidad y control de acceso ocurre dentro de tu propio backend.
+Toda la autenticación, gestión de usuarios, expiraciones, filtrado de visibilidad y control de acceso ocurre dentro de tu propio backend.
 
 ![Arquitectura NookMesh](docs/assets/images/architecture-overview.es.png)
 
@@ -68,6 +70,10 @@ Comparte ubicación entre personas de confianza con reglas de visibilidad person
 ### 🥾 Actividades outdoor
 
 Senderismo, ciclismo, 4x4 o cualquier actividad donde coordinar posiciones sea útil.
+
+### 💼 Comunidades, clubes y asociaciones
+
+Permite gestionar acceso temporal de miembros mediante expiraciones automáticas y renovaciones sin depender de servicios externos.
 
 ### 🛠 Usuarios técnicos y self-hosters
 
@@ -131,6 +137,14 @@ Genera credenciales y archivos operativos:
 ./auth/generate.sh
 ```
 
+El generador crea automáticamente:
+
+- credenciales MQTT
+- ACL MQTT
+- tokens API
+- runtime de visibilidad
+- estados operativos de usuario
+
 Inicia los servicios:
 
 ```bash
@@ -138,6 +152,7 @@ docker compose -f mqtt/docker-compose.yml up -d
 docker compose -f recorder/docker-compose.yml up -d
 docker compose -f worker/docker-compose.yml up -d
 docker compose -f api/docker-compose.yml up -d
+docker compose -f subscriptions/docker-compose.yml up -d
 ```
 
 Configura:
@@ -166,6 +181,7 @@ Con NookMesh:
 - Cada usuario tiene credenciales MQTT independientes
 - Cada usuario recibe su propio token API
 - La visibilidad entre usuarios se controla mediante reglas internas
+- Las suscripciones y expiraciones se gestionan localmente dentro de tu propia infraestructura
 - Los servicios pueden protegerse con **MQTT over TLS** y **HTTPS**
 - No existe dependencia obligatoria de plataformas cloud externas
 
@@ -182,7 +198,7 @@ Especialmente pensado para quienes valoran:
 La documentación técnica incluye:
 
 - instalación detallada
-- configuración de usuarios
+- usuarios, estados y suscripciones
 - modelo de visibilidad
 - integración con OwnTracks
 - integración con Guru Maps
@@ -205,7 +221,7 @@ Líneas previstas de desarrollo:
 - integración híbrida con redes mesh
 - despliegues LTE + mesh
 - compatibilidad con más clientes GeoJSON
-- herramientas de administración
+- panel de administración web
 - mejor observabilidad
 - configuración más modular
 - mejor experiencia de despliegue

@@ -7,31 +7,32 @@
 ![Stars](https://img.shields.io/github/stars/sercontri/nookmesh)
 [![Ko-fi](https://img.shields.io/badge/Support-Ko--fi-ff5f5f?logo=ko-fi&logoColor=white)](https://ko-fi.com/nooktrail)
 
-**Self-hosted real-time location sharing with full privacy and complete control over your data.**
+**Self-hosted real-time location sharing platform with complete privacy and full control over your data.**
 
-NookMesh is an open source real-time location sharing platform built around **OwnTracks**, **MQTT**, **Docker**, and a protected **GeoJSON API**, designed for people who want full control over their infrastructure, authentication, and location data.
+NookMesh is an open-source real-time location sharing platform built around **OwnTracks**, **MQTT**, **Docker**, and a protected **GeoJSON API**, designed for users who want complete control over their infrastructure, authentication, and location data.
 
-It originally started as a motorcycle group travel project, but its modular architecture makes it adaptable to families, outdoor groups, technical teams, and future hybrid location architectures with multiple location sources.
+It was originally created for motorcycle trips among friends, but its modular architecture allows it to be adapted to families, outdoor groups, technical teams, communities, and future hybrid architectures with multiple location sources.
 
-> ⚠️ Active project under ongoing development. The core architecture is functional and usable, though some capabilities are still being refined.
+> ⚠️ Project under active development. The core architecture is functional and usable, although some capabilities continue to evolve.
 
-## NookMesh in action
+## NookMesh in Action
 
 ![NookMesh running in Guru Maps](docs/assets/images/nookmesh-gurumaps-main.png)
 
 ## Features
 
-- Real-time location tracking using **OwnTracks + MQTT**
+- Real-time location tracking through **OwnTracks + MQTT**
 - **100% self-hosted** infrastructure
 - Protected GeoJSON API with per-user authentication
 - Direct visualization in **Guru Maps**
 - Multi-user and multi-device support
-- Advanced per-user visibility control
+- Advanced user visibility controls
+- Automatic subscription and expiration management
 - Modular Docker-based architecture
-- Secure deployment with TLS (recommended)
+- Secure deployment through TLS (recommended)
 - Foundation for future hybrid integrations
 
-## Current stack
+## Current Stack
 
 NookMesh currently uses:
 
@@ -42,71 +43,76 @@ NookMesh currently uses:
 - Docker
 - GeoJSON
 - Guru Maps
+- Subscription Service
 
-## How it works
+## How It Works
 
-NookMesh receives location updates from mobile devices via **OwnTracks**, processes them inside your own infrastructure, and exposes only authorized data to compatible clients.
+NookMesh receives locations from mobile devices through **OwnTracks**, processes them within your own infrastructure, and exposes only authorized data to compatible clients.
 
-All authentication, visibility filtering, and access control happen entirely in your own backend.
+All authentication, user management, expiration processing, visibility filtering, and access control occur entirely within your own backend.
 
-![NookMesh architecture](docs/assets/images/architecture-overview.en.png)
+![NookMesh Architecture](docs/assets/images/architecture-overview.en.png)
 
-📘 Full architecture documentation is available in the technical docs.
-
----
-
-## Use cases
-
-### 🏍 Motorcycle trips and group rides
-
-Track your riding companions in real time directly inside Guru Maps.
-
-### 👨‍👩‍👧‍👦 Family and friends
-
-Share live location with trusted people using customizable visibility rules.
-
-### 🥾 Outdoor activities
-
-Hiking, cycling, 4x4, or any activity where real-time coordination is useful.
-
-### 🛠 Technical users and self-hosters
-
-Ideal for users who prefer full control over infrastructure, storage, authentication, and deployment.
-
-### 📡 Hybrid transport (roadmap)
-
-Future integrations with mesh networks, gateways, and alternative location sources for scenarios without conventional mobile coverage.
+📘 Detailed architecture documentation is available in the technical documentation.
 
 ---
 
-## Quick installation
+## Use Cases
+
+### 🏍 Motorcycle Trips and Group Rides
+
+Track the position of fellow riders during routes and long-distance trips directly in Guru Maps.
+
+### 👨‍👩‍👧‍👦 Family and Friends
+
+Share locations with trusted people using personalized visibility rules.
+
+### 🥾 Outdoor Activities
+
+Hiking, cycling, off-roading, or any activity where coordinating positions is useful.
+
+### 💼 Communities, Clubs, and Associations
+
+Manage temporary member access through automatic expirations and renewals without relying on external services.
+
+### 🛠 Technical Users and Self-Hosters
+
+Ideal for users who prefer full control over infrastructure, storage, and authentication.
+
+### 📡 Hybrid Transport and Connectivity (Roadmap)
+
+Future integrations with mesh networks, gateways, and alternative location sources for scenarios without traditional mobile coverage.
+
+---
+
+## Quick Installation
 
 ### Requirements
 
 You will need:
 
-- Linux or Docker-compatible NAS
+- Linux or a Docker-compatible NAS
 - Docker Engine
 - Docker Compose v2
 - `jq`
 - `openssl`
-- Domain or subdomains (recommended)
+- A domain or subdomains (recommended)
 - Valid TLS certificates (recommended for production)
 - **OwnTracks** app
-- GeoJSON-compatible client (**Guru Maps recommended**)
+- A compatible GeoJSON client (**Guru Maps recommended**)
 
-Common compatible environments:
+Common supported environments:
 
 - Synology NAS
 - Ubuntu Server
 - Debian
 - Linux mini PCs
 - Linux VPS
-- other Docker-compatible Linux hosts
+- Other Docker-compatible hosts
 
 ---
 
-### Quick start
+### Quick Start
 
 Clone the repository:
 
@@ -123,13 +129,21 @@ cp config/filtros.example.env config/filtros.env
 cp config/recorder.example.env config/recorder.env
 ```
 
-Edit the configuration to match your environment.
+Edit the configuration according to your environment.
 
-Generate credentials and runtime files:
+Generate credentials and operational files:
 
 ```bash
 ./auth/generate.sh
 ```
+
+The generator automatically creates:
+
+- MQTT credentials
+- MQTT ACLs
+- API tokens
+- visibility runtime configuration
+- operational user states
 
 Start the services:
 
@@ -138,15 +152,16 @@ docker compose -f mqtt/docker-compose.yml up -d
 docker compose -f recorder/docker-compose.yml up -d
 docker compose -f worker/docker-compose.yml up -d
 docker compose -f api/docker-compose.yml up -d
+docker compose -f subscriptions/docker-compose.yml up -d
 ```
 
 Configure:
 
 - OwnTracks
-- Guru Maps (or another GeoJSON-compatible client)
+- Guru Maps (or another compatible GeoJSON client)
 - TLS (recommended)
 
-NookMesh also includes a ready-to-import example overlay for Guru Maps:
+NookMesh also includes a sample overlay for quick import into Guru Maps:
 
 ```text
 docs/assets/gurumaps/nookmesh_gurumaps_overlay.ms
@@ -156,20 +171,21 @@ docs/assets/gurumaps/nookmesh_gurumaps_overlay.ms
 
 ---
 
-## Privacy and security
+## Privacy and Security
 
-NookMesh is built around a privacy-first and data-sovereignty mindset.
+NookMesh is designed around a philosophy of privacy and data sovereignty.
 
 With NookMesh:
 
-- Your location data stays on your infrastructure
-- Each user gets independent MQTT credentials
-- Each user gets an individual API token
-- Visibility between users is controlled through internal rules
+- Your locations remain within your infrastructure
+- Every user has independent MQTT credentials
+- Every user receives an individual API token
+- User visibility is controlled through internal rules
+- Subscriptions and expirations are managed locally within your infrastructure
 - Services can be protected with **MQTT over TLS** and **HTTPS**
-- No mandatory dependency on third-party cloud platforms
+- No mandatory dependency on external cloud platforms exists
 
-Especially suitable for users who value:
+Especially suited for users who value:
 
 - privacy
 - control
@@ -179,14 +195,14 @@ Especially suitable for users who value:
 
 ## Documentation
 
-Technical documentation includes:
+The technical documentation includes:
 
 - detailed installation
-- user configuration
+- users, states, and subscriptions
 - visibility model
 - OwnTracks integration
 - Guru Maps integration
-- visual customization with MapCSS
+- MapCSS customization
 - MQTT and TLS
 - security and authentication
 - GeoJSON endpoints
@@ -194,22 +210,22 @@ Technical documentation includes:
 - troubleshooting
 - technical roadmap
 
-📘 **[Full technical documentation](docs/INDEX.md)**
+📘 **[Complete Technical Documentation](docs/INDEX.md)**
 
 ## Roadmap
 
-NookMesh is an active evolving project.
+NookMesh is an actively evolving project.
 
-Planned areas of development:
+Planned development areas include:
 
-- hybrid mesh integrations
+- hybrid mesh network integration
 - LTE + mesh deployments
-- support for more GeoJSON clients
-- administration tools
+- support for additional GeoJSON clients
+- web-based administration panel
 - improved observability
 - more modular configuration
-- easier deployment experience
-- web documentation portal (Docusaurus)
+- improved deployment experience
+- Docusaurus documentation portal
 
 ## Contributing
 
@@ -224,14 +240,14 @@ You can help by:
 - submitting pull requests
 - sharing real-world use cases
 
-If contributing code:
+If you contribute code:
 
 - do not include secrets or real credentials
-- use example configuration files
-- keep consistency with the current architecture
+- use example files
+- maintain consistency with the current architecture
 - document relevant changes
 
-## Support the project
+## Support the Project
 
 NookMesh is an independent project developed in personal time.
 
@@ -244,20 +260,20 @@ If you find it useful, you can support it by:
 - 📣 sharing the project
 - ☕ supporting development on [Ko-fi](https://ko-fi.com/nooktrail)
 
-Your support helps maintain test infrastructure, improve documentation, and continue developing privacy-focused open tools.
+Your support helps maintain testing infrastructure, improve documentation, and continue developing privacy-focused open-source tools.
 
 ## License
 
 NookMesh is distributed under the **GNU Affero General Public License v3.0 (AGPLv3)**.
 
-In short:
+In summary:
 
-- you can use it freely
-- you can modify it
-- you can deploy it on your own infrastructure
-- you can redistribute it
-- you can offer services based on NookMesh, respecting AGPLv3 obligations
+- you may use it freely
+- you may modify it
+- you may deploy it on your infrastructure
+- you may redistribute it
+- you may offer services based on NookMesh while complying with AGPLv3 obligations
 
-If you modify the project and make it available as a network-accessible service, those modifications must remain under the same license.
+If you modify the project and provide it as a network-accessible service, those modifications must remain available under the same license.
 
 See [LICENSE](LICENSE) for the full legal text.

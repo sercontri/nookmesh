@@ -79,7 +79,7 @@ Modelo de almacenamiento y datos operativos:
 
 ## Usuarios
 
-Identidades, permisos y configuración de usuarios:
+Modelo completo de usuarios, permisos, estados, expiraciones y configuración de suscripciones:
 
 - [Usuarios](configuration/users.es.md)
 
@@ -91,13 +91,19 @@ Broker, autenticación y transporte:
 
 ## Generador de autenticación
 
-Generación de credenciales MQTT, ACL, tokens API y configuración runtime:
+Generación y mantenimiento de credenciales MQTT, ACL, tokens API, estados de usuario y configuración runtime:
 
 - [Generador de autenticación](configuration/auth-generator.es.md)
 
+## Suscripciones
+
+Servicio autónomo para gestión automática de expiraciones, renovaciones y mantenimiento periódico de usuarios:
+
+- [Suscripciones](configuration/subscriptions.es.md)
+
 ## Filtros operativos
 
-Comportamiento del procesamiento GeoJSON:
+Comportamiento del procesamiento GeoJSON y parámetros globales de ejecución:
 
 - [Filtros](configuration/filters.es.md)
 
@@ -190,7 +196,9 @@ Si es tu primera instalación de NookMesh, este es el recorrido recomendado:
 5. [Usuarios](configuration/users.es.md)
 6. [MQTT](configuration/mqtt.es.md)
 7. [Generador de autenticación](configuration/auth-generator.es.md)
-8. [Visibilidad](configuration/visibility.es.md)
-9. [OwnTracks](integrations/owntracks.es.md)
-10. [Guru Maps](integrations/gurumaps.es.md)
-11. [Problemas comunes](troubleshooting/common-issues.es.md)
+8. [Suscripciones](configuration/subscriptions.es.md)
+9. [Filtros](configuration/filters.es.md)
+10. [Visibilidad](configuration/visibility.es.md)
+11. [OwnTracks](integrations/owntracks.es.md)
+12. [Guru Maps](integrations/gurumaps.es.md)
+13. [Problemas comunes](troubleshooting/common-issues.es.md)
