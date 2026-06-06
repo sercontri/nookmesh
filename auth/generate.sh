@@ -439,14 +439,17 @@ if docker ps --format '{{.Names}}' | grep -q '^nookmesh-mqtt$'; then
 fi
 
 if docker ps --format '{{.Names}}' | grep -q '^nookmesh-recorder$'; then
+  echo "== Restarting Recorder =="
   docker restart nookmesh-recorder >/dev/null
 fi
 
 if docker ps --format '{{.Names}}' | grep -q '^nookmesh-worker$'; then
+  echo "== Restarting Worker =="
   docker restart nookmesh-worker >/dev/null
 fi
 
 if docker ps --format '{{.Names}}' | grep -q '^nookmesh-api$'; then
+  echo "== Restarting API =="
   docker restart nookmesh-api >/dev/null
 fi
 

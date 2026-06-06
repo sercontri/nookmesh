@@ -6,6 +6,8 @@
 services:
   nookmesh-subscriptions:
 
+    image: nookmesh-subscriptions:latest
+
     container_name: nookmesh-subscriptions
 
     build:
@@ -13,5 +15,9 @@ services:
 
     restart: unless-stopped
 
+    environment:
+      - TZ=Europe/Madrid
+
     volumes:
       - ../:/nookmesh
+      - /var/run/docker.sock:/var/run/docker.sock

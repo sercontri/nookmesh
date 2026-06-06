@@ -3,4 +3,4 @@
 # Daily maintenance tasks
 # ------------------------------------------------------------
 
-5 0 * * * /bin/bash /nookmesh/auth/generate.sh
+5 0 * * * cd /nookmesh && /bin/bash auth/generate.sh >> /proc/1/fd/1 2>&1

@@ -7,7 +7,10 @@ FROM alpine:3.22
 
 RUN apk add --no-cache \
     bash \
-    tzdata
+    tzdata \
+    docker-cli \
+    jq \
+    openssl
 
 COPY cron/nookmesh /etc/crontabs/root
 COPY entrypoint.sh /entrypoint.sh
