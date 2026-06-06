@@ -13,11 +13,14 @@ if [ -f /nookmesh/config/filtros.env ]; then
     . /nookmesh/config/filtros.env
 fi
 
+echo "ENABLE_SUBSCRIPTIONS=${ENABLE_SUBSCRIPTIONS:-true}"
+
 if [ "${ENABLE_SUBSCRIPTIONS:-true}" != "true" ]; then
     echo "== Subscriptions disabled =="
     tail -f /dev/null
 fi
 
 echo "== Subscriptions enabled =="
+echo "== Starting cron daemon =="
 
 crond -f -l 8
